@@ -18,11 +18,6 @@ app.use(
 //lets Express read JSON from request bodies
 app.use(express.json());
 
-//test route
-app.get("/api/ping", (req, res) => {
-  res.json({ message: "pong" });
-});
-
 //starts the server on a specific port
 app.listen(3001, () => console.log("Server running on port 3001"));
 
