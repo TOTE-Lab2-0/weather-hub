@@ -11,6 +11,10 @@ the position object automatically returned by navigator.geolocation.getCurrentLo
       speed: null,          // how fast you're moving
     }
 
+
+    query parameters - send data to the server
+    ? marks the start of the query 
+
 */
 
 
@@ -39,7 +43,11 @@ function App() {
   // keeps track of who is logged in. starts as nobody
   const [user, setUser] = useState(null)
 
+  //
   const [location, setLocation] = useState(null)
+
+  //
+  const [weather, setWeather] = useState(null)
 
   //react hook - run once after the react component has rendered 
   useEffect(
@@ -61,7 +69,32 @@ function App() {
   );
 
   console.log(`Location: ${location}`)
-}
+
+  //
+  useEffect(() => {
+    //guard clause - if we don't have the location exit out of this function 
+    if(!location) return 
+
+    const fetchWeather = async () => {
+      try {
+        //send the longitude and latitude we got in the useEffect above to the backend server
+        const res = await fetch(`/api/weather?lat=${location.lat}&lng=${location.lng}`)
+
+        //convert the response into a javascript object that is useful to us
+        const data = await res.json()
+
+        //update the weather state 
+        setWeather(data)
+
+        console.log(`Weather Data: ${data}`)
+
+      } catch (err) {
+        console.error('Weather fetch failed:', err)
+      }
+    }
+
+    fetchWeather()
+  }, [location])
 
   return (
     <div>
@@ -139,5 +172,7 @@ function App() {
     </div>
   )
 }
+
+
 
 export default App
