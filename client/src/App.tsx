@@ -1,122 +1,100 @@
 import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "./assets/vite.svg";
-import heroImg from "./assets/hero.png";
+
+import { supabase } from "./supabaseClient";
+
 import "./App.css";
 
+
+console.log(supabase);
+
+
 function App() {
-  const [count, setCount] = useState(0);
+  //state -> data we want to react to/update UI based on changes from the user
+
+  // when user clicks "Sign Up" button, show the sign up pop-up. starts hidden
+  const [showSignUp, setShowSignUp] = useState(false)
+
+  // when user clicks "Log In" button, show the login pop-up. starts hidden
+  const [showLogin, setShowLogin] = useState(false)
+
+  // keeps track of who is logged in. starts as nobody
+  const [user, setUser] = useState(null)
 
   return (
-    <>
-      <section id="center">
-        <div className="bg-blue-500 p-4 text-white">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
+    <div>
+
+      {/* ── NAVBAR ── */}
+      <nav>
+        <h1>Weather App</h1>
         <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
+          {user ? (
+            <div>
+              <span>Hi, {user}</span>
+              <button onClick={() => setUser(null)}>Log Out</button>
+            </div>
+          ) : (
+            <div>
+              <button onClick={() => setShowLogin(true)}>Log In</button>
+              <button onClick={() => setShowSignUp(true)}>Sign Up</button>
+            </div>
+          )}
         </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+      </nav>
 
-      <div className="ticks"></div>
+      {/* ── CURRENT WEATHER — always visible ── */}
+      <div>
+        <h1>72°F</h1>
+        <p>Sunny</p>
+        <p>Feels like 70°F</p>
+      </div>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
+      {/* ── HOURLY FORECAST — always visible ── */}
+      <div>
+        {["Now","3pm","6pm","9pm","12am","3am","6am","9am"].map(hour => (
+          <div key={hour}>
+            <p>{hour}</p>
+            <p>70°</p>
+          </div>
+        ))}
+      </div>
+
+      {/* ── SAVED LOCATIONS — only when logged in ── */}
+      {user && (
+        <div>
+          <h2>Saved Locations</h2>
+          <input type="text" placeholder="Search for a city..." />
+          <p>No saved locations yet</p>
         </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+      )}
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  );
+      {/* ── SIGN UP MODAL ── */}
+      {showSignUp && (
+        <div>
+          <div>
+            <h2>Sign Up</h2>
+            <input type="text" placeholder="Username" />
+            <input type="password" placeholder="Password" />
+            <button>Create Account</button>
+            <button onClick={() => setShowSignUp(false)}>Cancel</button>
+          </div>
+        </div>
+      )}
+
+      {/* ── LOGIN MODAL ── */}
+      {showLogin && (
+        <div>
+          <div>
+            <h2>Log In</h2>
+            <input type="text" placeholder="Username" />
+            <input type="password" placeholder="Password" />
+            <button>Log In</button>
+            <button onClick={() => setShowLogin(false)}>Cancel</button>
+          </div>
+        </div>
+      )}
+
+    </div>
+  )
 }
 
-export default App;
+export default App
