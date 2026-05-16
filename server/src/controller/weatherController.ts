@@ -5,18 +5,10 @@ export const getWeather = async (
   res: Response,
   next: NextFunction,
 ): Promise<void> => {
-  const { lat, lng } = req.query;
-
-  if (!lat || !lng) {
-    const warning = "Location identifier is suggested."
-    console.log("Warning:", warning)
-
-// Location of Serengeti National Park, Tanzania
-    const lat = "-2.3333";
-    const lng = "34.8333";
-    //res.status(400).json({ error: "Location identifier is mandatory." });
-    return;
-  }
+  // Location of Serengeti National Park, Tanzania
+  const lat = (req.query.lat as string) || "-2.3333";
+  const lng = (req.query.lng as string) || "34.8333";
+  //res.status(400).json({ error: "Location identifier is mandatory." });
 
   try {
     const url =
@@ -39,6 +31,6 @@ export const getWeather = async (
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch weather" });
-    return next(error)
+    return next(error);
   }
 };

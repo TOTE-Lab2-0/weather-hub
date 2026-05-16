@@ -10,7 +10,7 @@ dotenv.config();
 
 //creates the Express server
 const app = express();
-const PORT =  30001;
+const PORT =  3001;
 
 //adds headers to every response
 app.use(
