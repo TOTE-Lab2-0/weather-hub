@@ -47,7 +47,8 @@ function App() {
   const [location, setLocation] = useState(null)
 
   //
-  const [weather, setWeather] = useState(null)
+  const [weather, setWeather] = useState<any>(null)
+  
 
   //react hook - run once after the react component has rendered 
   useEffect(
@@ -96,12 +97,19 @@ function App() {
     fetchWeather()
   }, [location])
 
+  useEffect(() => {
+    //guard clause - if we don't have the weather  exit out of this function 
+    if(!weather) return 
+  console.log('Weather updated:', weather);
+
+}, [weather]);
+
   return (
-    <div>
+    <div className="min-h-screen bg-slate-100 p-6">
 
       {/* ── NAVBAR ── */}
       <nav>
-        <h1>Weather App</h1>
+        <h1 className="text-blue-600 text-3xl font-bold">Weather App</h1>
         <div>
           {user ? (
             <div>
@@ -118,21 +126,46 @@ function App() {
       </nav>
 
       {/* ── CURRENT WEATHER — always visible ── */}
-      <div>
-        <h1>72°F</h1>
-        <p>Sunny</p>
-        <p>Feels like 70°F</p>
+      {weather ? (
+      <div className="">
+        <h1>
+         { /* Math.round(weather.list[0].main.temp)*/} 
+        </h1>
+        <p>
+          {weather.list[0].weather[0].description}
+        </p>
+        <p>
+          Feels like {Math.round(weather.list[0].main.feels_like)}°C
+        </p>
+        <img src={`https://openweathermap.org/img/wn/${weather.list[0].weather[0].icon}@2x.png`} />
       </div>
+      ) : (
+        <p>Loading weather...</p>
+      )}
+
+{weather ? (
+  <pre>{JSON.stringify(weather, null, 2)}</pre>
+) : (
+  <p>Loading weather...</p>
+)}
 
       {/* ── HOURLY FORECAST — always visible ── */}
-      <div>
-        {["Now","3pm","6pm","9pm","12am","3am","6am","9am"].map(hour => (
-          <div key={hour}>
-            <p>{hour}</p>
-            <p>70°</p>
-          </div>
-        ))}
-      </div>
+      {weather && (
+        <div>
+          {weather.list.slice(0, 8).map((hour: any) => (
+            <div key={hour.dt}>
+              <p>
+                {new Date(hour.dt * 1000).toLocaleTimeString("en", { hour: "numeric" })}
+              </p>
+              <p>{Math.round(hour.main.temp)}°C</p>
+              <img
+                src={`https://openweathermap.org/img/wn/${hour.weather[0].icon}.png`}
+                alt="weather icon"
+              />
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* ── SAVED LOCATIONS — only when logged in ── */}
       {user && (
