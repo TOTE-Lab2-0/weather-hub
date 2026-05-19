@@ -59,16 +59,16 @@ function App() {
           setLocation(
             { 
               lat: position.coords.latitude, 
-              long: position.coords.longitude 
+              lng: position.coords.longitude 
             });
       }, () => {
-            setLocation({ lat: 45.4229, long: -122.3762 });
+            setLocation({ lat: 45.4229, lng: -122.3762 });
             console.log("Access to user's location denied - default to Boring, Oregon")
       });
     }, []
   );
 
-  console.log(`Location: ${location}`)
+  console.log('Location:', location);
 
   //
   useEffect(() => {
@@ -86,7 +86,7 @@ function App() {
         //update the weather state 
         setWeather(data)
 
-        console.log(`Weather Data: ${data}`)
+        console.log('Weather Data:', data);
 
       } catch (err) {
         console.error('Weather fetch failed:', err)

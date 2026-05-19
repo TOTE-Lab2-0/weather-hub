@@ -10,15 +10,10 @@ export const getWeather = async (
   const lng = (req.query.lng as string) || "34.8333";
   //res.status(400).json({ error: "Location identifier is mandatory." });
 
+  console.log("lat: ", lat);
+  console.log("lng: ", lng);
   try {
-    const url =
-      `https://api.open-meteo.com/v1/forecast` +
-      `?latitude=${lat}` +
-      `&longitude=${lng}` +
-      `&hourly=temperature_2m,relative_humidity_2m,precipitation_probability,precipitation,apparent_temperature` +
-      `&temperature_unit=fahrenheit` +
-      `&timezone=auto`;
-
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,wind_direction_10m,wind_gusts_10m,precipitation,rain,showers,snowfall,weather_code,cloud_cover,pressure_msl,surface_pressure,is_day`;
     //send a request from server to the Open-Meteo API
     // response here is a JSON object
     const response = await fetch(url);
