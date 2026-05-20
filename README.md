@@ -7,7 +7,7 @@ A real-time weather app that detects your location and displays current conditio
 ## What it does
 
 - Detects the user's location automatically via the browser
-- Displays current weather — temperature, condition, feels like, and weather icon
+- Displays current weather — temperature, feels like, wind speed
 - Shows an 8-hour forecast with real times and temperatures
 - Falls back to **Boring, Oregon** if location access is denied 🗺️
 
@@ -19,7 +19,7 @@ A real-time weather app that detects your location and displays current conditio
 |-------|-----------|
 | Frontend | React, TypeScript, Vite, Tailwind CSS v4 |
 | Backend | Node.js, Express, TypeScript |
-| Weather Data | OpenWeatherMap API |
+| Weather Data | Open-Meteo API |
 | Database | Supabase |
 | Version Control | Git, GitHub |
 
@@ -30,8 +30,9 @@ A real-time weather app that detects your location and displays current conditio
 ### Prerequisites
 
 - Node.js v18 or higher
-- An [OpenWeatherMap](https://openweathermap.org) API key (free tier)
 - A [Supabase](https://supabase.com) project
+
+> No weather API key needed — Open-Meteo is completely free and open with no sign up required.
 
 ### 1. Clone the repo
 
@@ -61,11 +62,7 @@ cd ../server
 npm install
 ```
 
-Create a `.env` file inside `/server`:
-
-```
-OPENWEATHER_API_KEY=your_openweathermap_api_key
-```
+> No `.env` file needed for the weather API — Open-Meteo requires no key.
 
 ### 4. Run the app
 
@@ -106,7 +103,6 @@ weather-hub/
 │   ├── routes/
 │   │   └── weather.ts
 │   ├── index.ts              # Server entry point
-│   ├── .env                  # Backend environment variables (never commit)
 │   └── package.json
 └── README.md
 ```
@@ -122,12 +118,6 @@ weather-hub/
 | `VITE_SUPABASE_URL` | Your Supabase project URL |
 | `VITE_SUPABASE_ANON_KEY` | Your Supabase anon public key |
 
-### `/server/.env`
-
-| Variable | Description |
-|----------|-------------|
-| `OPENWEATHER_API_KEY` | Your OpenWeatherMap API key |
-
 > ⚠️ Never commit `.env` files to GitHub. Both are listed in `.gitignore`.
 
 ---
@@ -136,7 +126,7 @@ weather-hub/
 
 ### `GET /api/weather`
 
-Fetches weather data for a given location.
+Fetches weather data for a given location via Open-Meteo.
 
 **Query Parameters:**
 
@@ -150,12 +140,37 @@ Fetches weather data for a given location.
 GET /api/weather?lat=51.5074&lng=-0.1278
 ```
 
-**Response:** OpenWeatherMap forecast object containing current conditions and hourly data.
+**Response:** Open-Meteo forecast object containing current conditions and hourly data:
+
+```json
+{
+  "current": {
+    "temperature_2m": 18.4,
+    "apparent_temperature": 16.2,
+    "wind_speed_10m": 12.3,
+    "weather_code": 3
+  },
+  "hourly": {
+    "time": ["2024-01-01T00:00", "2024-01-01T01:00"],
+    "temperature_2m": [18.4, 17.9]
+  }
+}
+```
+
+---
+
+## Future Features
+
+- User authentication (sign up / login)
+- Save favourite locations to your account
+- Toggle between °C and °F
+- Dark mode
+- Weather condition descriptions and icons
 
 ---
 
 ## Acknowledgements
 
-- Weather data provided by [OpenWeatherMap](https://openweathermap.org)
-- Database and auth infrastructure by [Supabase](https://supabase.com)
+- Weather data provided by [Open-Meteo](https://open-meteo.com) — free, open, no API key required
+- Database infrastructure by [Supabase](https://supabase.com)
 - Built with ❤️ by TOTE Lab
