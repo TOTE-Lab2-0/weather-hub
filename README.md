@@ -1,15 +1,17 @@
 # 🌤️ Weather Hub
 
-A real-time weather app that detects your location and displays current conditions and an hourly forecast. Built as a first group project.
+A real-time weather app that detects your location, displays current conditions and forecasts, and lets logged-in users save and manage their favourite locations.
 
 ---
 
 ## What it does
 
 - Detects the user's location automatically via the browser
-- Displays current weather — temperature, feels like, wind speed
-- Shows an 8-hour forecast with real times and temperatures
-- Falls back to **Boring, Oregon** if location access is denied 🗺️
+- Displays current weather — temperature, feels like, humidity, wind speed
+- Shows a 7-day forecast + Hourly weather
+- Falls back to **Boring, Oregon** if location access is denied 
+- Users can sign up and log in to save locations
+- Logged-in users get a saved locations dashboard with detailed weather pages per location
 
 ---
 
@@ -19,8 +21,10 @@ A real-time weather app that detects your location and displays current conditio
 |-------|-----------|
 | Frontend | React, TypeScript, Vite, Tailwind CSS v4 |
 | Backend | Node.js, Express, TypeScript |
-| Weather Data | Open-Meteo API |
-| Database | Supabase |
+| Auth | bcrypt, express-session |
+| Weather Data | Open-Meteo API (free, no key required) |
+| Geocoding | Open-Meteo Geocoding API |
+| Database | MongoDB Atlas, Mongoose |
 | Version Control | Git, GitHub |
 
 ---
@@ -30,14 +34,14 @@ A real-time weather app that detects your location and displays current conditio
 ### Prerequisites
 
 - Node.js v18 or higher
-- A [Supabase](https://supabase.com) project
+- A [MongoDB Atlas](https://www.mongodb.com/atlas) account and cluster
 
 > No weather API key needed — Open-Meteo is completely free and open with no sign up required.
 
 ### 1. Clone the repo
 
 ```bash
-git clone https://github.com/TOTE-Lab/weather-hub.git
+git clone https://github.com/TOTE-Lab2/weather-hub.git
 cd weather-hub
 ```
 
@@ -48,12 +52,7 @@ cd client
 npm install
 ```
 
-Create a `.env` file inside `/client`:
-
-```
-VITE_SUPABASE_URL=your_supabase_project_url
-VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
-```
+> No `.env` file needed for the frontend.
 
 ### 3. Set up the backend
 
@@ -62,7 +61,12 @@ cd ../server
 npm install
 ```
 
-> No `.env` file needed for the weather API — Open-Meteo requires no key.
+Create a `.env` file inside `/server` using `.env.example` as a template:
+```
+PORT=3001
+MONGODB_URI=your_mongodb_connection_string
+SESSION_SECRET=your_random_secret
+```
 
 ### 4. Run the app
 
@@ -93,17 +97,24 @@ weather-hub/
 ├── client/                   # React frontend
 │   ├── src/
 │   │   ├── App.tsx           # Main app component
-│   │   ├── supabaseClient.ts # Shared Supabase instance
 │   │   └── main.tsx          # Entry point
-│   ├── .env                  # Frontend environment variables (never commit)
 │   └── package.json
-├── server/                   # Express backend
+├── server/
 │   ├── controllers/
 │   │   └── weatherController.ts
+│   ├── db/
+│   │   ├── connection.ts     # MongoDB connection
+│   │   └── models/
+│   │       └── User.ts       # User model with saved locations
+│   ├── middleware/
+│   │   └── isAuthenticated.ts
 │   ├── routes/
 │   │   └── weather.ts
-│   ├── index.ts              # Server entry point
+│   ├── index.ts
+│   ├── .env
+│   ├── .env.example
 │   └── package.json
+├── docs/                     # Project documentation
 └── README.md
 ```
 
@@ -111,12 +122,13 @@ weather-hub/
 
 ## Environment Variables
 
-### `/client/.env`
+### `/server/.env`
 
 | Variable | Description |
 |----------|-------------|
-| `VITE_SUPABASE_URL` | Your Supabase project URL |
-| `VITE_SUPABASE_ANON_KEY` | Your Supabase anon public key |
+| `PORT` | 3000 |
+| `MONGODB_URI` | our_mongodb_connection_string |
+| `SESSION_SECRET`| your_random_secret |
 
 > ⚠️ Never commit `.env` files to GitHub. Both are listed in `.gitignore`.
 
@@ -159,18 +171,16 @@ GET /api/weather?lat=51.5074&lng=-0.1278
 
 ---
 
-## Future Features
+## Stretch Goals
 
-- User authentication (sign up / login)
-- Save favourite locations to your account
-- Toggle between °C and °F
+- Animated weather icons
+- Home location pinned to top of saved locations dashboard
+- Weather news feed
 - Dark mode
-- Weather condition descriptions and icons
 
 ---
 
 ## Acknowledgements
 
 - Weather data provided by [Open-Meteo](https://open-meteo.com) — free, open, no API key required
-- Database infrastructure by [Supabase](https://supabase.com)
-- Built with ❤️ by TOTE Lab
+- Built with ❤️ by TOTE Lab 2

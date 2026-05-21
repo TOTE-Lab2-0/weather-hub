@@ -19,11 +19,7 @@ the position object automatically returned by navigator.geolocation.getCurrentLo
 
 import { useState, useEffect } from "react";
 
-import { supabase } from "./supabaseClient";
-
 import "./App.css";
-
-console.log(supabase);
 
 function App() {
   //state -> data we want to react to/update UI based on changes from the user
