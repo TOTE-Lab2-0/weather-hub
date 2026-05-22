@@ -20,6 +20,7 @@ the position object automatically returned by navigator.geolocation.getCurrentLo
 import { useState, useEffect } from "react";
 import NavBar from './components/NavBar.tsx'
 import LandingPage from './pages/LandingPage.tsx'
+import AuthModal from './components/AuthModal.tsx'
 import Dashboard from "./pages/Dashboard.tsx";
 
 function App() {
@@ -87,9 +88,8 @@ function App() {
   return (
     <div>
       <NavBar setShowLogin={setShowLogin} setShowSignUp={setShowSignUp}/>
-      <LandingPage weather={weather} showLogin={showLogin} showSignUp={showSignUp} setShowLogin={setShowLogin} setShowSignUp={setShowSignUp}/>
-
-      
+      <LandingPage weather={weather} />
+      <AuthModal showLogin={showLogin} showSignUp={showSignUp} setShowLogin={setShowLogin} setShowSignUp={setShowSignUp} />
     </div>
   );
 }
