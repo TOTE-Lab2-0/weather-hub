@@ -55,16 +55,10 @@ function App() {
       },
       () => {
         setLocation({ lat: 45.4229, lng: -122.3762 });
-        console.log(
-          "Access to user's location denied - default to Boring, Oregon",
-        );
       },
     );
   }, []);
 
-  console.log("Location:", location);
-
-  //
   useEffect(() => {
     //guard clause - if we don't have the location exit out of this function
     if (!location) return;
@@ -81,8 +75,6 @@ function App() {
 
         //update the weather state
         setWeather(data);
-
-        console.log("Weather Data:", data);
       } catch (err) {
         console.error("Weather fetch failed:", err);
       }
@@ -90,12 +82,6 @@ function App() {
 
     fetchWeather();
   }, [location]);
-
-  useEffect(() => {
-    //guard clause - if we don't have the weather  exit out of this function
-    if (!weather) return;
-    console.log("Weather updated:", weather);
-  }, [weather]);
 
   const getWeatherIcon = (code: number) => {
     // Maps Open-Meteo WMO codes to OpenWeather Map icon codes
