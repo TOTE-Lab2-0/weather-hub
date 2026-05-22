@@ -232,6 +232,9 @@ function App() {
         </div>
       )}
 
+      {/* 7 day forecast */}
+      <div></div>
+
       {/* ── SAVED LOCATIONS — only when logged in ── */}
       {user && (
         <div>
