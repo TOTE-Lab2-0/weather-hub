@@ -18,8 +18,10 @@ the position object automatically returned by navigator.geolocation.getCurrentLo
 */
 
 import { useState, useEffect } from "react";
-
-import "./App.css";
+import NavBar from './components/shared/NavBar.tsx'
+import LandingPage from './pages/LandingPage.tsx'
+import AuthModal from './components/shared/AuthModal.tsx'
+import Dashboard from "./pages/Dashboard.tsx";
 
 function App() {
   //state -> data we want to react to/update UI based on changes from the user
@@ -57,16 +59,10 @@ function App() {
       },
       () => {
         setLocation({ lat: 45.4229, lng: -122.3762 });
-        console.log(
-          "Access to user's location denied - default to Boring, Oregon",
-        );
       },
     );
   }, []);
 
-  console.log("Location:", location);
-
-  //
   useEffect(() => {
     //guard clause - if we don't have the location exit out of this function
     if (!location) return;
@@ -83,8 +79,12 @@ function App() {
 
         console.log("API Data:", data);
         //update the weather state
+<<<<<<< HEAD
         setAllData(data);
 
+=======
+        setWeather(data);
+>>>>>>> dev
       } catch (err) {
         console.error("Weather fetch failed:", err);
       }
@@ -93,6 +93,7 @@ function App() {
     fetchWeather();
   }, [location]);
 
+<<<<<<< HEAD
   useEffect(() => {
     //guard clause - if we don't have the weather  exit out of this function
     if (!allData) return;
@@ -273,6 +274,13 @@ function App() {
         </div>
       )}
     
+=======
+  return (
+    <div>
+      <NavBar setShowLogin={setShowLogin} setShowSignUp={setShowSignUp}/>
+      <LandingPage weather={weather} />
+      <AuthModal showLogin={showLogin} showSignUp={showSignUp} setShowLogin={setShowLogin} setShowSignUp={setShowSignUp} />
+>>>>>>> dev
     </div>
   );
 }
