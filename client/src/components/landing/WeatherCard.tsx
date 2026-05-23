@@ -1,5 +1,5 @@
 {/* ── CURRENT WEATHER ── */}
-import LoadingScreen from "../LoadingScreen";
+import LoadingScreen from "../shared/LoadingScreen";
 import getWeatherIcon from "../../utils/getWeatherIcon";
 
 const WeatherCard = ({weather}) => {

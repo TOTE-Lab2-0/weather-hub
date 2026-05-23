@@ -18,9 +18,9 @@ the position object automatically returned by navigator.geolocation.getCurrentLo
 */
 
 import { useState, useEffect } from "react";
-import NavBar from './components/NavBar.tsx'
+import NavBar from './components/shared/NavBar.tsx'
 import LandingPage from './pages/LandingPage.tsx'
-import AuthModal from './components/AuthModal.tsx'
+import AuthModal from './components/shared/AuthModal.tsx'
 import Dashboard from "./pages/Dashboard.tsx";
 
 function App() {

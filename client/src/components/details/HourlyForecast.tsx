@@ -1,5 +1,5 @@
 {/* ── HOURLY FORECAST ── */}
-import getWeatherIcon from "../../utils/getWeatherIcon";
+import getWeatherIcon from "../../utils/getWeatherIcon.js";
 
 const HourlyForecast = ({weather}) => {
   return (

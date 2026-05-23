@@ -1,5 +1,5 @@
-import WeatherCard from '../components/weather/WeatherCard.tsx'
-import HourlyForecast from '../components/weather/HourlyForecast.tsx'
+import WeatherCard from '../components/landing/WeatherCard.tsx'
+import HourlyForecast from '../components/details/HourlyForecast.tsx'
 
 const LandingPage = ({weather}) => {
   return (
