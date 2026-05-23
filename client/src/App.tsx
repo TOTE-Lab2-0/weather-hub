@@ -40,7 +40,9 @@ function App() {
   );
 
   //
-  const [weather, setWeather] = useState<any>(null);
+  const [allData, setAllData] = useState<any>(null);
+
+  //
 
   //react hook - run once after the react component has rendered
   useEffect(() => {
@@ -79,10 +81,10 @@ function App() {
         //convert the response into a javascript object that is useful to us
         const data = await res.json();
 
+        console.log("API Data:", data);
         //update the weather state
-        setWeather(data);
+        setAllData(data);
 
-        console.log("Weather Data:", data);
       } catch (err) {
         console.error("Weather fetch failed:", err);
       }
@@ -93,9 +95,9 @@ function App() {
 
   useEffect(() => {
     //guard clause - if we don't have the weather  exit out of this function
-    if (!weather) return;
-    console.log("Weather updated:", weather);
-  }, [weather]);
+    if (!allData) return;
+    console.log("Weather updated:", allData);
+  }, [allData]);
 
   const getWeatherIcon = (code: number) => {
     // Maps Open-Meteo WMO codes to OpenWeather Map icon codes
@@ -145,28 +147,29 @@ function App() {
       </nav>
 
       {/* ── CURRENT WEATHER ── */}
-      {weather && weather.current ? (
+      {allData && allData.weather.current ? (
         <div className="bg-white p-4 rounded-lg shadow-md mb-6 mt-8  w-128">
           <h2 className="text-xl font-bold mb-3 mt-3">
             Current Location:
             <p className="text-sm font-bold mb-1 mt-1 flex gap-4">
-              <span>Lat: {weather.latitude.toFixed(2)}</span>
-              <span>Lon: {weather.longitude.toFixed(2)}</span>
+              <span>Lat: {allData.weather.latitude.toFixed(2)}</span>
+              <span>Lon: {allData.weather.longitude.toFixed(2)}</span>
+              <span>city: {allData.city.city }</span> 
             </p>
           </h2>
 
           <h1 className="text-4xl font-bold">
-            {Math.round(weather.current.temperature_2m)}°C
+            {Math.round(allData.weather.current.temperature_2m)}°C
           </h1>
           <p className="text-gray-600">
-            Feels like {Math.round(weather.current.apparent_temperature)}°C
+            Feels like {Math.round(allData.weather.current.apparent_temperature)}°C
           </p>
           <p className="text-sm text-gray-400">
-            Humidity: {weather.current.relative_humidity_2m}% | Wind:{" "}
-            {weather.current.wind_speed_10m} km/h
+            Humidity: {allData.weather.current.relative_humidity_2m}% | Wind:{" "}
+            {allData.weather.current.wind_speed_10m} km/h
           </p>
           <img
-            src={`https://openweathermap.org/img/wn/${getWeatherIcon(weather.current.weather_code)}@2x.png`}
+            src={`https://openweathermap.org/img/wn/${getWeatherIcon(allData.weather.current.weather_code)}@2x.png`}
             alt="Weather condition graphic"
             className="w-16 h-16 object-contain"
             onError={(e) => {
@@ -180,13 +183,13 @@ function App() {
       )}
 
       {/* ── HOURLY FORECAST ── */}
-      {weather && weather.hourly && weather.hourly.time && (
+      {allData?.weather?.hourly?.time && (
         <div className="mt-6 bg-white p-6 rounded-lg shadow-md">
           <h2 className="text-xl font-bold mb-4 text-gray-800">
             Hourly Forecast
           </h2>
           <div className="flex gap-4 overflow-x-auto pb-2">
-            {weather.hourly.time
+            {allData.weather.hourly.time
               .map((timeString: string, index: number) => ({
                 timeString,
                 index,
@@ -218,10 +221,10 @@ function App() {
                       })}
                     </p>
                     <p className="text-2xl font-bold text-blue-600 mt-1">
-                      {Math.round(weather.hourly.temperature_2m[index])}°C
+                      {Math.round(allData.weather.hourly.temperature_2m[index])}°C
                     </p>
                     <img
-                      src={`https://openweathermap.org/img/wn/${getWeatherIcon(weather.hourly.weather_code[index])}.png`}
+                      src={`https://openweathermap.org/img/wn/${getWeatherIcon(allData.weather.hourly.weather_code[index])}.png`}
                       alt="hourly weather icon"
                       className="mx-auto mt-1 w-10 h-10"
                     />
@@ -269,6 +272,7 @@ function App() {
           </div>
         </div>
       )}
+    
     </div>
   );
 }
