@@ -42,7 +42,9 @@ function App() {
   );
 
   //
-  const [weather, setWeather] = useState<any>(null);
+  const [allData, setAllData] = useState<any>(null);
+
+  //
 
   //react hook - run once after the react component has rendered
   useEffect(() => {
@@ -75,8 +77,10 @@ function App() {
         //convert the response into a javascript object that is useful to us
         const data = await res.json();
 
+        console.log("API Data:", data);
         //update the weather state
-        setWeather(data);
+        setAllData(data);
+
       } catch (err) {
         console.error("Weather fetch failed:", err);
       }
