@@ -1,33 +1,30 @@
-const AuthModal = ({showSignUp, showLogin, setShowSignUp, setShowLogin}) => {
-  return (
-    <>
-    {/* ── SIGN UP MODAL ── */}
-    {showSignUp && (
-        <div>
-          <div>
-            <h2>Sign Up</h2>
-            <input type="text" placeholder="Username" />
-            <input type="password" placeholder="Password" />
-            <button>Create Account</button>
-            <button onClick={() => setShowSignUp(false)}>Cancel</button>
-          </div>
-        </div>
-      )}
+import { useState } from "react";
 
-      {/* ── LOGIN MODAL ── */}
-      {showLogin && (
-        <div>
-          <div>
-            <h2>Log In</h2>
-            <input type="text" placeholder="Username" />
-            <input type="password" placeholder="Password" />
-            <button>Log In</button>
-            <button onClick={() => setShowLogin(false)}>Cancel</button>
-          </div>
-        </div>
-      )}
-    </>
-  )
-}
+type AuthMode = "login" | "signup";
 
-export default AuthModal
+type AuthModalProps = {
+  isOpen: boolean;
+  onClose: () => void;
+  onAuthSuccess: () => void;
+  initialMode: AuthMode;
+};
+
+const AuthModal = ({
+  isOpen,
+  onClose,
+  onAuthSuccess,
+  initialMode,
+}: AuthModalProps) => {
+  const [mode, setMode] = useState<AuthMode>(initialMode);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassWord] = useState("");
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  if (!isOpen) return null;
+
+  return <div></div>;
+};
+
+export default AuthModal;
