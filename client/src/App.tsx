@@ -73,10 +73,10 @@ function App() {
         <div>
           <AuthModal onClose={onCloseModal} onAuthSuccess={onAuthSuccess} initialMode={modalMode} isOpen={isModalOpen}/>
           <Routes>
-            <Route path="/" element={<LandingPage location={location} logOut={handleLogOut} openModal={onOpenModal} user={user}/>} />
+            <Route path="/" element={<LandingPage location={location} logout={handleLogOut} openModal={onOpenModal} user={user}/>} />
 
             <Route element={<ProtectedRoute isAuthenticated={isLoggedIn} />}>
-              <Route path="/dashboard" element={<Dashboard logOut={handleLogOut} openModal={onOpenModal} user={user}/>} />
+              <Route path="/dashboard" element={<Dashboard logout={handleLogOut} openModal={onOpenModal} user={user}/>} />
               <Route path="/location/current" element={<DetailPage location={location}/>} />
             </Route>
           </Routes>

@@ -1,34 +1,27 @@
-{/* ── NAVBAR ── */}
-
-const NavBar = ({setShowLogin, setShowSignUp}) => {
+import { Link } from 'react-router-dom'
+const NavBar = ({ logout, openModal, user }) => {
 
 return (
-  <div>
-    <nav>
-      <h1 className="text-blue-600 text-3xl font-bold">Weather Hub</h1>
-      <div>
-          <div className="absolute top-4 right-12 flex gap-3">
-            {/* position: absolute;
-                top: 1rem;  
-                right: 2rem;
-                display: flex;
-                gap: 0.75rem; */}
-            <button
-              className="px-4 py-2 border rounded-lg shadow-sm bg-gray-300 text-white hover:bg-blue-500"
-              onClick={() => setShowLogin(true)}
-            >
-              Log In
-            </button>
-            <button
-              className="px-4 py-2 border rounded-lg shadow-sm bg-gray-300 text-white hover:bg-blue-500"
-              onClick={() => setShowSignUp(true)}
-            >
-              Sign Up
-            </button>
-          </div>
-      </div>
-    </nav>
-  </div>
+  <>
+    <div>
+      <Link to='/'>WeatherHub</Link>
+    </div>
+    { user ? 
+      <nav>
+        <div>
+          <p>Hi, {user.name}</p>
+          <button onClick={logout}>Logout</button>
+        </div>
+      </nav>
+    :
+      <nav>
+        <div>
+          <button onClick={() => {openModal('signup')}}>Sign Up</button>
+          <button onClick={() => {openModal('login')}}>Log In</button>
+        </div>
+      </nav>
+    }
+  </>
   )
 }
 
