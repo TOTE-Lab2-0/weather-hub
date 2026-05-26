@@ -14,8 +14,10 @@ const LandingPage = ({ location, logout, openModal, user }) => {
       {error ? <p>Something went wrong loading weather data.</p> : 
         <>
           <NavBar logout={logout} openModal={openModal} user={user} />
+          <p>Live Conditions</p>
+          <h1>Your weather, right now.</h1>
           <WeatherCard weatherData={weatherData} isLoading={isLoading}/>
-          <SevenDayForecast weatherData={weatherData} isLoading={isLoading}/>
+          {/* <SevenDayForecast weatherData={weatherData} isLoading={isLoading}/> */}
           {!user ? 
             <CTACard openModal={openModal} />
           :

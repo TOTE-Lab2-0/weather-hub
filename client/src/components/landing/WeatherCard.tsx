@@ -4,7 +4,7 @@ const WeatherCard = ({weatherData, isLoading }) => {
 
   return (
     <>
-      {isLoading ? 
+      {isLoading || !weatherData ? 
         <div className="animate-spin rounded-full h-8 w-8 border-4 border-gray-200 border-t-teal-400"></div>
        : 
         <div className="bg-white p-4 rounded-lg shadow-md mb-6 mt-8  w-128">
