@@ -1,4 +1,4 @@
-const DetailPage = () => {
+const DetailPage = ({ location }) => {
   return (
     <>
     </>

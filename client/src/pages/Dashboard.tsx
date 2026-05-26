@@ -1,4 +1,4 @@
-const Dashboard = () => {
+const Dashboard = ({ logOut, openModal, user }) => {
   return (
     <>
       <div>
