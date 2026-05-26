@@ -91,7 +91,9 @@ const AuthModal = ({
 
       {error && <p>{error}</p>}
 
-      <button type="submit">Log In</button>
+      <button type="submit" disabled={isLoading}>
+        {isLoading ? "Logging in..." : "Log In"}
+      </button>
 
       <button type="button" onClick={() => setMode("signup")}>
         Need an account?
@@ -135,7 +137,9 @@ const AuthModal = ({
 
       {error && <p>{error}</p>}
 
-      <button type="submit">Create Account</button>
+      <button type="submit" disabled={isLoading}>
+        {isLoading ? "Creating account..." : "Create Account"}
+      </button>
 
       <button type="button" onClick={() => setMode("login")}>
         Already have an account?
