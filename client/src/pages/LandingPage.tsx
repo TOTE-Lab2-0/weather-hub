@@ -1,6 +1,9 @@
 import WeatherCard from '../components/landing/WeatherCard.tsx'
-import HourlyForecast from '../components/details/HourlyForecast.tsx'
+import SevenDayForecast from '../components/shared/SevenDayForcast.tsx'
 import NavBar from '../components/shared/NavBar.tsx'
+import CTACard from '../components/landing/CTACard.tsx'
+import DashboardLinkCard from '../components/landing/DashboardLinkCard.tsx'
+
 import useWeather from '../hooks/useWeather.ts'
 
 const LandingPage = ({ location, logout, openModal, user }) => {
@@ -8,9 +11,18 @@ const LandingPage = ({ location, logout, openModal, user }) => {
 
   return (
     <>
-      <NavBar logout={logout} openModal={openModal} user={user}/>
-      <WeatherCard weather={weatherData} />
-      <HourlyForecast weather={weatherData} />
+      {error ? <p>Something went wrong loading weather data.</p> : 
+        <>
+          <NavBar logout={logout} openModal={openModal} user={user} />
+          <WeatherCard weather={weatherData} isLoading={isLoading}/>
+          <SevenDayForecast weather={weatherData} isLoading={isLoading}/>
+          {!user ? 
+            <CTACard openModal={openModal} />
+          :
+            <DashboardLinkCard user={user}/>
+          }
+        </>
+      }
     </>
   )
 }
