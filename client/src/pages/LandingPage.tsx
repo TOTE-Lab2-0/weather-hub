@@ -1,11 +1,11 @@
 import WeatherCard from '../components/landing/WeatherCard.tsx'
 import HourlyForecast from '../components/details/HourlyForecast.tsx'
 
-const LandingPage = ({weather}) => {
+const LandingPage = ({weatherData}) => {
   return (
     <>
-      <WeatherCard weather={weather} />
-      <HourlyForecast weather={weather} />
+      <WeatherCard weather={weatherData} />
+      <HourlyForecast weather={weatherData} />
     </>
   )
 }

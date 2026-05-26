@@ -18,35 +18,78 @@ the position object automatically returned by navigator.geolocation.getCurrentLo
 */
 
 import { useState, useEffect } from "react";
-import NavBar from './components/shared/NavBar.tsx'
+import { Routes, Route, Navigate, Outlet, useNavigate } from 'react-router-dom'
 import LandingPage from './pages/LandingPage.tsx'
 import AuthModal from './components/shared/AuthModal.tsx'
 import Dashboard from "./pages/Dashboard.tsx";
+import DetailPage from "./pages/DetailPage.tsx";
+import LoadingScreen from "./components/shared/LoadingScreen.tsx";
+
+const ProtectedRoute = ({ isAuthenticated }) => {
+  if (!isAuthenticated) {
+    return <Navigate to='/' replace/>
+  }
+  return <Outlet />
+}
 
 function App() {
-  //state -> data we want to react to/update UI based on changes from the user
+  const [ verifying, setVerifying ] = useState(false)
 
-  // when user clicks "Sign Up" button, show the sign up pop-up. starts hidden
+  const [ isModalOpen, setIsModalOpen ] = useState(false);
 
-  const [showSignUp, setShowSignUp] = useState(false);
+  const [ modalMode, setModalMode ] = useState<'signup' | 'login' | null>(null)
 
-  // when user clicks "Log In" button, show the login pop-up. starts hidden
-  const [showLogin, setShowLogin] = useState(false);
+  const [ isLoggedIn, setIsLoggedIn ] = useState(false);
 
-  // keeps track of who is logged in. starts as nobody
   const [user, setUser] = useState(null);
 
-  //
-  const [location, setLocation] = useState<{ lat: number; lng: number } | null>(
-    null,
-  );
+  const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
 
-  //
-  const [allData, setAllData] = useState<any>(null);
+  const navigate = useNavigate()
 
-  //
+  useEffect(() => {
+    const verifyUser = async () => {
+      setVerifying(true)
+      try {
+        const res = await fetch('/api/auth/verify', {
+          method: 'GET',
+          credentials: 'include'
+        })
 
-  //react hook - run once after the react component has rendered
+        if (res.ok) {
+          const data = await res.json()
+          setUser(data)
+          setIsLoggedIn(true)
+        }
+      } catch(err) {
+        console.error('Auth error', err)
+      } finally {
+        setVerifying(false)
+      }
+    }
+    verifyUser()
+  }, [])
+
+  const handleLogOut = async () => {
+    try {
+      const res = await fetch('/api/auth/logout', {
+        method: 'POST',
+        credentials: 'include'
+      })
+
+      if (!res.ok) {
+        throw new Error("Logout Failed")
+      }
+
+      setUser(null)
+      setIsLoggedIn(false)
+      navigate('/')
+    } catch(err) {
+      console.error(err)
+    }
+  }
+
+   //react hook - run once after the react component has rendered
   useEffect(() => {
     //navigator.geolocation is a built in web browser API
     navigator.geolocation.getCurrentPosition(
@@ -63,38 +106,38 @@ function App() {
     );
   }, []);
 
-  useEffect(() => {
-    //guard clause - if we don't have the location exit out of this function
-    if (!location) return;
+  const onOpenModal = (mode: 'signup' | 'login') => {
+    setIsModalOpen(true)
+    setModalMode(mode)
+  }
 
-    const fetchWeather = async () => {
-      try {
-        //send the longitude and latitude we got in the useEffect above to the backend server
-        const res = await fetch(
-          `/api/weather?lat=${location?.lat}&lng=${location?.lng}`,
-        );
+  const onCloseModal = () => {
+    setIsModalOpen(false)
+  }
 
-        //convert the response into a javascript object that is useful to us
-        const data = await res.json();
+  const onAuthSuccess = (user) => {
+    setUser(user)
+    setIsLoggedIn(true)
+    setIsModalOpen(false)
+    navigate("/location/current")
+  }
 
-        console.log("API Data:", data);
-        //update the weather state
-        setAllData(data);
+  return ( 
+    <>
+      {verifying ? <LoadingScreen /> : 
+        <div>
+          <AuthModal onClose={onCloseModal} onAuthSuccess={onAuthSuccess} initialMode={modalMode} isOpen={isModalOpen}/>
+          <Routes>
+            <Route path="/" element={<LandingPage location={location} logOut={handleLogOut} openModal={onOpenModal} user={user}/>} />
 
-      } catch (err) {
-        console.error("Weather fetch failed:", err);
+            <Route element={<ProtectedRoute isAuthenticated={isLoggedIn} />}>
+              <Route path="/dashboard" element={<Dashboard logOut={handleLogOut} openModal={onOpenModal} user={user}/>} />
+              <Route path="/location/current" element={<DetailPage location={location}/>} />
+            </Route>
+          </Routes>
+        </div>
       }
-    };
-
-    fetchWeather();
-  }, [location]);
-
-  return (
-    <div>
-      <NavBar setShowLogin={setShowLogin} setShowSignUp={setShowSignUp}/>
-      <LandingPage weather={weather} />
-      <AuthModal showLogin={showLogin} showSignUp={showSignUp} setShowLogin={setShowLogin} setShowSignUp={setShowSignUp} />
-    </div>
+    </>
   );
 }
 
