@@ -1,8 +1,8 @@
-const AuthModal = ({showSignUp, showLogin, setShowSignUp, setShowLogin}) => {
+const AuthModal = ({ onClose, onAuthSuccess, initialMode, isOpen }) => {
   return (
     <>
     {/* ── SIGN UP MODAL ── */}
-    {showSignUp && (
+    {/* {showSignUp && (
         <div>
           <div>
             <h2>Sign Up</h2>
@@ -12,10 +12,10 @@ const AuthModal = ({showSignUp, showLogin, setShowSignUp, setShowLogin}) => {
             <button onClick={() => setShowSignUp(false)}>Cancel</button>
           </div>
         </div>
-      )}
+      )} */}
 
       {/* ── LOGIN MODAL ── */}
-      {showLogin && (
+      {/* {showLogin && (
         <div>
           <div>
             <h2>Log In</h2>
@@ -25,7 +25,7 @@ const AuthModal = ({showSignUp, showLogin, setShowSignUp, setShowLogin}) => {
             <button onClick={() => setShowLogin(false)}>Cancel</button>
           </div>
         </div>
-      )}
+      )} */}
     </>
   )
 }
