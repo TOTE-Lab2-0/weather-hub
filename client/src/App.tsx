@@ -18,12 +18,13 @@ the position object automatically returned by navigator.geolocation.getCurrentLo
 */
 
 import { useState, useEffect } from "react";
-import { Routes, Route, Navigate, Outlet, useNavigate } from 'react-router-dom'
+import { Routes, Route, Navigate, Outlet } from 'react-router-dom'
 import LandingPage from './pages/LandingPage.tsx'
 import AuthModal from './components/shared/AuthModal.tsx'
 import Dashboard from "./pages/Dashboard.tsx";
 import DetailPage from "./pages/DetailPage.tsx";
 import LoadingScreen from "./components/shared/LoadingScreen.tsx";
+import useAuth from './hooks/useAuth.ts'
 
 const ProtectedRoute = ({ isAuthenticated }) => {
   if (!isAuthenticated) {
@@ -33,63 +34,14 @@ const ProtectedRoute = ({ isAuthenticated }) => {
 }
 
 function App() {
-  const [ verifying, setVerifying ] = useState(false)
-
   const [ isModalOpen, setIsModalOpen ] = useState(false);
 
   const [ modalMode, setModalMode ] = useState<'signup' | 'login' | null>(null)
 
-  const [ isLoggedIn, setIsLoggedIn ] = useState(false);
-
-  const [user, setUser] = useState(null);
-
   const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
 
-  const navigate = useNavigate()
+  const { user, verifying, isLoggedIn, handleLogOut, onAuthSuccess } = useAuth()
 
-  useEffect(() => {
-    const verifyUser = async () => {
-      setVerifying(true)
-      try {
-        const res = await fetch('/api/auth/verify', {
-          method: 'GET',
-          credentials: 'include'
-        })
-
-        if (res.ok) {
-          const data = await res.json()
-          setUser(data)
-          setIsLoggedIn(true)
-        }
-      } catch(err) {
-        console.error('Auth error', err)
-      } finally {
-        setVerifying(false)
-      }
-    }
-    verifyUser()
-  }, [])
-
-  const handleLogOut = async () => {
-    try {
-      const res = await fetch('/api/auth/logout', {
-        method: 'POST',
-        credentials: 'include'
-      })
-
-      if (!res.ok) {
-        throw new Error("Logout Failed")
-      }
-
-      setUser(null)
-      setIsLoggedIn(false)
-      navigate('/')
-    } catch(err) {
-      console.error(err)
-    }
-  }
-
-   //react hook - run once after the react component has rendered
   useEffect(() => {
     //navigator.geolocation is a built in web browser API
     navigator.geolocation.getCurrentPosition(
@@ -113,13 +65,6 @@ function App() {
 
   const onCloseModal = () => {
     setIsModalOpen(false)
-  }
-
-  const onAuthSuccess = (user) => {
-    setUser(user)
-    setIsLoggedIn(true)
-    setIsModalOpen(false)
-    navigate("/location/current")
   }
 
   return ( 
