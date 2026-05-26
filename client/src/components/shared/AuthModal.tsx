@@ -1,11 +1,17 @@
-import { useState } from "react";
+import { useState, type SyntheticEvent } from "react";
+
+type AuthUser = {
+  id: string;
+  name: string;
+  email: string;
+};
 
 type AuthMode = "login" | "signup";
 
 type AuthModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  onAuthSuccess: () => void;
+  onAuthSuccess: (user: AuthUser) => void;
   initialMode: AuthMode;
 };
 
@@ -22,10 +28,42 @@ const AuthModal = ({
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  async function handleSubmit(event: SyntheticEvent<HTMLFormElement>) {
     event.preventDefault();
-    console.log({ mode, name, email, password });
-  };
+    setError("");
+    setIsLoading(true);
+
+    const endpoint = mode === "login" ? "/api/auth/login" : "/api/auth/signup";
+
+    const requestBody =
+      mode === "login" ? { email, password } : { name, email, password };
+
+    try {
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(requestBody),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.error || "Something went wrong. Please try again.");
+        return;
+      }
+
+      onAuthSuccess(data);
+      onClose();
+    } catch (error) {
+      console.error("Auth failed", error);
+      setError("Unable to connect. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   const loginForm = (
     <form onSubmit={handleSubmit}>
