@@ -13,16 +13,18 @@ const DetailPage = ({ location }) => {
     <>
       {error ? <p>Weather detail page loading error.</p> 
       : 
-        <div>
-          <div>
-            <Link to='/'>Home</Link>
-            <Link to='/dashboard'>Dashboard</Link>
+        <div className='min-h-screen bg-gradient-to-b from-[#0a1628] to-[#0d2b4e]'>
+          <div className='max-w-sm mx-auto'>
+            <div className='flex items-center justify-between pt-6 pb-2'>
+              <Link className='text-white/80 text-sm flex items-center pl-4 hover:text-white' to='/'>‹ Home</Link>
+              <Link className='text-white/80 text-sm flex items-center hover:text-white' to='/dashboard'>Dashboard ›</Link>
+            </div>
+            <Hero weatherData={weatherData} isLoading={isLoading} />
+            <SaveButton weatherData={weatherData} location={location}/>
+            <WeatherDetails weatherData={weatherData} isLoading={isLoading} />
+            <HourlyForecast weatherData={weatherData} isLoading={isLoading} />
+            {/* <SevenDayForecast weatherData={weatherData} isLoading={isLoading} /> */}
           </div>
-          <Hero weatherData={weatherData} isLoading={isLoading} />
-          <SaveButton weatherData={weatherData} />
-          <WeatherDetails weatherData={weatherData} isLoading={isLoading} />
-          <HourlyForecast weatherData={weatherData} isLoading={isLoading} />
-          {/* <SevenDayForecast weatherData={weatherData} isLoading={isLoading} /> */}
         </div>
       }
     </>
