@@ -1,34 +1,31 @@
-{/* ── NAVBAR ── */}
-
-const NavBar = ({setShowLogin, setShowSignUp}) => {
+import { Link } from 'react-router-dom'
+import myLogo from '../../assets/favicon.ico'
+const NavBar = ({ logout, openModal, user }) => {
 
 return (
-  <div>
-    <nav>
-      <h1 className="text-blue-600 text-3xl font-bold">Weather Hub</h1>
-      <div>
-          <div className="absolute top-4 right-12 flex gap-3">
-            {/* position: absolute;
-                top: 1rem;  
-                right: 2rem;
-                display: flex;
-                gap: 0.75rem; */}
-            <button
-              className="px-4 py-2 border rounded-lg shadow-sm bg-gray-300 text-white hover:bg-blue-500"
-              onClick={() => setShowLogin(true)}
-            >
-              Log In
-            </button>
-            <button
-              className="px-4 py-2 border rounded-lg shadow-sm bg-gray-300 text-white hover:bg-blue-500"
-              onClick={() => setShowSignUp(true)}
-            >
-              Sign Up
-            </button>
-          </div>
+  <>
+    <nav className='flex items-center justify-between px-6 py-4 bg-white border-b border-gray-100'>
+      <Link to='/' className='flex items-center gap-2'>
+      <img className=' w-8 h-8' src={myLogo} alt='icon'/>
+      <div className='text-lg'>
+        <span className='font-bold text-gray-900'>Weather</span>
+        <span className='font-bold text-[#09b8d4]'>Hub</span>
       </div>
+      </Link>
+    
+    { user ? 
+      <div>
+        <p>Hi, {user.name}</p>
+        <button onClick={logout}>Logout</button>
+      </div>
+    :
+      <div className='flex items-center gap-3'>
+        <button className='px-4 py-2 rounded-lg border border-gray-300 bg-white text-gray-700 text-sm hover:bg-[#09b8d4]/20' onClick={() => {openModal('login')}}>Log In</button>
+        <button className='px-4 py-2 rounded-lg bg-[#09b8d4] text-white text-sm hover:bg-[#09b8d4]/80' onClick={() => {openModal('signup')}}>Sign Up</button>
+      </div>
+    }
     </nav>
-  </div>
+  </>
   )
 }
 
