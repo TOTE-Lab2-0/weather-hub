@@ -18,29 +18,32 @@ the position object automatically returned by navigator.geolocation.getCurrentLo
 */
 
 import { useState, useEffect } from "react";
-import { Routes, Route, Navigate, Outlet } from 'react-router-dom'
-import LandingPage from './pages/LandingPage.tsx'
-import AuthModal from './components/shared/AuthModal.tsx'
+import { Routes, Route, Navigate, Outlet } from "react-router-dom";
+import LandingPage from "./pages/LandingPage.tsx";
+import AuthModal from "./components/shared/AuthModal.tsx";
 import Dashboard from "./pages/Dashboard.tsx";
 import DetailPage from "./pages/DetailPage.tsx";
 import LoadingScreen from "./components/shared/LoadingScreen.tsx";
-import useAuth from './hooks/useAuth.ts'
+import useAuth from "./hooks/useAuth.ts";
 
 const ProtectedRoute = ({ isAuthenticated }) => {
   if (!isAuthenticated) {
-    return <Navigate to='/' replace/>
+    return <Navigate to="/" replace />;
   }
-  return <Outlet />
-}
+  return <Outlet />;
+};
 
 function App() {
-  const [ isModalOpen, setIsModalOpen ] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const [ modalMode, setModalMode ] = useState<'signup' | 'login' | null>(null)
+  const [modalMode, setModalMode] = useState<"signup" | "login">("login");
 
-  const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [location, setLocation] = useState<{ lat: number; lng: number } | null>(
+    null,
+  );
 
-  const { user, verifying, isLoggedIn, handleLogOut, onAuthSuccess } = useAuth()
+  const { user, verifying, isLoggedIn, handleLogOut, onAuthSuccess } =
+    useAuth();
 
   useEffect(() => {
     //navigator.geolocation is a built in web browser API
@@ -58,30 +61,59 @@ function App() {
     );
   }, []);
 
-  const onOpenModal = (mode: 'signup' | 'login') => {
-    setIsModalOpen(true)
-    setModalMode(mode)
-  }
+  const onOpenModal = (mode: "signup" | "login") => {
+    setIsModalOpen(true);
+    setModalMode(mode);
+  };
 
   const onCloseModal = () => {
-    setIsModalOpen(false)
-  }
+    setIsModalOpen(false);
+  };
 
-  return ( 
+  return (
     <>
-      {verifying ? <LoadingScreen /> : 
+      {verifying ? (
+        <LoadingScreen />
+      ) : (
         <div>
-          <AuthModal onClose={onCloseModal} onAuthSuccess={onAuthSuccess} initialMode={modalMode} isOpen={isModalOpen}/>
+          <AuthModal
+            onClose={onCloseModal}
+            onAuthSuccess={onAuthSuccess}
+            initialMode={modalMode}
+            isOpen={isModalOpen}
+          />
           <Routes>
-            <Route path="/" element={<LandingPage location={location} logout={handleLogOut} openModal={onOpenModal} user={user}/>} />
+            <Route
+              path="/"
+              element={
+                <LandingPage
+                  location={location}
+                  logout={handleLogOut}
+                  openModal={onOpenModal}
+                  user={user}
+                />
+              }
+            />
 
             <Route element={<ProtectedRoute isAuthenticated={isLoggedIn} />}>
-              <Route path="/dashboard" element={<Dashboard logout={handleLogOut} openModal={onOpenModal} user={user}/>} />
-              <Route path="/location/current" element={<DetailPage location={location}/>} />
+              <Route
+                path="/dashboard"
+                element={
+                  <Dashboard
+                    logout={handleLogOut}
+                    openModal={onOpenModal}
+                    user={user}
+                  />
+                }
+              />
+              <Route
+                path="/location/current"
+                element={<DetailPage location={location} />}
+              />
             </Route>
           </Routes>
         </div>
-      }
+      )}
     </>
   );
 }
