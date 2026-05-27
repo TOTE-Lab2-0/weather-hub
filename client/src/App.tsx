@@ -62,8 +62,8 @@ function App() {
   }, []);
 
   const onOpenModal = (mode: "signup" | "login") => {
-    setIsModalOpen(true);
     setModalMode(mode);
+    setIsModalOpen(true);
   };
 
   const onCloseModal = () => {
@@ -76,12 +76,14 @@ function App() {
         <LoadingScreen />
       ) : (
         <div>
-          <AuthModal
-            onClose={onCloseModal}
-            onAuthSuccess={onAuthSuccess}
-            initialMode={modalMode}
-            isOpen={isModalOpen}
-          />
+          {isModalOpen && (
+            <AuthModal
+              onClose={onCloseModal}
+              onAuthSuccess={onAuthSuccess}
+              initialMode={modalMode}
+              isOpen={isModalOpen}
+            />
+          )}
           <Routes>
             <Route
               path="/"
