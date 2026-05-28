@@ -33,7 +33,7 @@ const DetailPage = ({ location }) => {
         }
         locationFetch()
       } else {
-        setCoords({lat: location.lat, lng: location.lng})
+        setCoords({lat: location?.lat, lng: location?.lng})
       }
     }, [id, location])
 
