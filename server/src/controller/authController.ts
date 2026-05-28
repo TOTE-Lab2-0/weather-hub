@@ -5,7 +5,6 @@ import { User } from "../models/User";
 declare module "express-session" {
   interface SessionData {
     userId?: string;
-    role?: string;
   }
 }
 
@@ -79,8 +78,6 @@ export const logIn = async (
     }
 
     req.session.userId = user._id.toString();
-
-    req.session.role = user.role;
 
     return res.status(200).json({ message: "Logged in successfully" });
   } catch (err) {
