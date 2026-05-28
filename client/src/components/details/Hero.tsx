@@ -13,7 +13,7 @@ const Hero = ({ weatherData, isLoading }) => {
             <p className='text-base text-white/60 mb-8'>{weatherData.city.principalSubdivision}</p>
             <h1 className='text-8xl mb-2'>{Math.round(weatherData.weather.current.temperature_2m)}°</h1>
             <p className='text-sm text-white/60 mb-2' >Feels Like: {Math.round(weatherData.weather.current.apparent_temperature)}°</p>
-            <p className='text-sm text-white/60 mb-8'>H: <span className='text-white'>{Math.round(weatherData.weather.daily.temperature_2m_max[0])}°</span> | L: <span className='text-white'>{weatherData.weather.daily.temperature_2m_min[0]}°</span></p>
+            <p className='text-sm text-white/60 mb-8'>H: <span className='text-white'>{Math.round(weatherData.weather.daily.temperature_2m_max[0])}°</span> | L: <span className='text-white'>{Math.round(weatherData.weather.daily.temperature_2m_min[0])}°</span></p>
           </div>
         }
       </div>

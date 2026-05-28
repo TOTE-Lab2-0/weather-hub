@@ -1,14 +1,44 @@
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
+import { useState, useEffect } from 'react'
 import Hero from '../components/details/Hero.tsx'
 import SaveButton from '../components/details/SaveButton.tsx'
-// import HourlyForecast from '../components/details/HourlyForecast.tsx'
-// import SevenDayForecast from '../components/shared/SevenDayForcast.tsx'
+import HourlyForecast from '../components/details/HourlyForecast.tsx'
+import SevenDayForecast from '../components/shared/SevenDayForcast.tsx'
 import WeatherDetails from '../components/details/WeatherDetails.tsx'
 import useWeather from '../hooks/useWeather.ts'
 
 const DetailPage = ({ location }) => {
-  const { weatherData, isLoading, error } = useWeather(location?.lat, location?.lng)
+  const { id } = useParams() 
+  const [ coords, setCoords ] = useState<{ lat: number; lng: number } | null>(null)
+  
+  
+  
+    useEffect(() => {
+      if (id) {
+        const locationFetch = async () => {
+          try {
+            const res = await fetch('/api/locations', {
+              method: 'GET',
+              credentials: 'include',
+            })
 
+            const data = await res.json()
+
+            const savedLocation = data.saved_locations.find(location => location._id === id)
+
+            setCoords({lat:savedLocation.lat, lng:savedLocation.lng})
+          } catch(err) {
+            throw new Error('Couldnt find saved location', err)
+          }
+        }
+        locationFetch()
+      } else {
+        setCoords({lat: location.lat, lng: location.lng})
+      }
+    }, [id, location])
+
+    const { weatherData, isLoading, error } = useWeather(coords?.lat, coords?.lng)
+  
   return (
     <>
       {error ? <p>Weather detail page loading error.</p> 
@@ -22,8 +52,8 @@ const DetailPage = ({ location }) => {
             <Hero weatherData={weatherData} isLoading={isLoading} />
             <SaveButton weatherData={weatherData} location={location}/>
             <WeatherDetails weatherData={weatherData} isLoading={isLoading} />
-            {/* <HourlyForecast weatherData={weatherData} isLoading={isLoading} /> */}
-            {/* <SevenDayForecast weatherData={weatherData} isLoading={isLoading} /> */}
+            <HourlyForecast weatherData={weatherData} isLoading={isLoading} variant={'dark'}/>
+            <SevenDayForecast weatherData={weatherData} isLoading={isLoading} />
           </div>
         </div>
       }
