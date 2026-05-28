@@ -1,6 +1,3 @@
-{
-  /* ── HOURLY FORECAST ── */
-}
 import getWeatherIcon from "../../utils/getWeatherIcon.ts";
 
 type HourlyForecastProps = {
@@ -14,16 +11,32 @@ type HourlyForecastProps = {
       };
     };
   } | null;
+  isLoading: boolean;
+  openModal: (mode: "signup" | "login") => void;
 };
 
-const HourlyForecast = ({ weatherData }: HourlyForecastProps) => {
+const HourlyForecast = ({
+  weatherData,
+  isLoading,
+  openModal,
+}: HourlyForecastProps) => {
+  if (isLoading) {
+    return (
+      <div className="mt-6 mb-6 bg-white p-6 rounded-lg shadow-md border-t-4 border-t-[#09b8d4]">
+        <h2 className="text-xl font-bold mb-4 text-gray-800">
+          Hourly Forecast
+        </h2>
+        <p className="text-sm text-gray-500">Loading hourly forecast...</p>
+      </div>
+    );
+  }
   return (
     <>
       {weatherData &&
         weatherData.weather &&
         weatherData.weather.hourly &&
         weatherData.weather.hourly.time && (
-          <div className="mt-6 bg-white p-6 rounded-lg shadow-md">
+          <div className="mt-6 mb-6 bg-white p-6 rounded-lg shadow-md border-t-4 border-t-[#09b8d4]">
             <h2 className="text-xl font-bold mb-4 text-gray-800">
               Hourly Forecast
             </h2>
@@ -40,7 +53,7 @@ const HourlyForecast = ({ weatherData }: HourlyForecastProps) => {
                   return itemTime >= currentHourStart;
                 })
                 // 2. Take the next 8 hours starting from right now
-                .slice(0, 8)
+                .slice(0, 24)
                 .map(
                   ({
                     timeString,
@@ -59,11 +72,11 @@ const HourlyForecast = ({ weatherData }: HourlyForecastProps) => {
                           hour12: true,
                         })}
                       </p>
-                      <p className="text-2xl font-bold text-blue-600 mt-1">
+                      <p className="text-2xl font-bold text-grey-800 mt-1">
                         {Math.round(
                           weatherData.weather.hourly.temperature_2m[index],
                         )}
-                        °C
+                        °F
                       </p>
                       <img
                         src={`https://openweathermap.org/img/wn/${getWeatherIcon(weatherData.weather.hourly.weather_code[index])}.png`}
@@ -83,6 +96,19 @@ const HourlyForecast = ({ weatherData }: HourlyForecastProps) => {
                     </div>
                   ),
                 )}
+            </div>
+
+            <div className="mt-5 flex flex-col items-center gap-3 text-center">
+              <p className="text-sm text-gray-500">
+                Want more? Create an account for the 7-day forecast.
+              </p>
+              <button
+                type="button"
+                onClick={() => openModal("signup")}
+                className="px-4 py-2 rounded-lg bg-[#09b8d4] text-white text-sm font-semibold hover:bg-[#09b8d4]/80"
+              >
+                View 7-Day Forecast
+              </button>
             </div>
           </div>
         )}
