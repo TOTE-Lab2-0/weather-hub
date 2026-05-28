@@ -1,12 +1,11 @@
 import type { Request, Response, NextFunction } from "express";
-import bcrypt from "bcryptjs";
-//import { User } from "../models/User";
-
-//declare module
+import bcrypt from "bcrypt";
+import { User } from "../models/User";
 
 declare module "express-session" {
   interface SessionData {
     userId?: string;
+    role?: string;
   }
 }
 
@@ -62,21 +61,42 @@ export const logIn = async (
   const { email, password } = req.body;
 
   if (!email || !password) {
-    return res.status(400).json({ error: e });
+    return res.status(400).json({ error: "Email and password are required" });
+  }
+
+  try {
+    const normalizedEmail = email.toLowerCase();
+    const user = await User.findOne({ email: normalizedEmail });
+    if (!user) {
+      return res.status(401).json({ error: "Unrecognized user" });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.passwordHash);
+    if (!isMatch) {
+      return res
+        .status(401)
+        .json({ error: "Username and password don't match" });
+    }
+
+    req.session.userId = user._id.toString();
+
+    req.session.role = user.role;
+
+    return res.status(200).json({ message: "Logged in successfully" });
+  } catch (err) {
+    return next(err);
   }
 };
 
-//logOut should be async
-export const logOut = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  // req.seesion.destory() deletes the current user's session data from the server
+//logOut should be async but we omit "async" here since no "await" is used inside the function
+export const logOut = (req: Request, res: Response, next: NextFunction) => {
+  // req.session.destroy() deletes the current user's session data from the server
   req.session.destroy((err: Error | null) => {
     if (err) {
-      return res.status(500).json({ message: "logout failed " });
+      return next(err);
     }
+
+    //cookie name
     res.clearCookie("connect.sid");
 
     return res.status(200).json({
@@ -85,4 +105,10 @@ export const logOut = async (
   });
 };
 
-export const verifyAuth = async () => {};
+export const verifyAuth = (req: Request, res: Response, next: NextFunction) => {
+  // Check if session exists and contains a userId
+  if (!req.session || !req.session.userId) {
+    return res.status(401).json({ message: " Unauthorized" });
+  }
+  return next();
+};
