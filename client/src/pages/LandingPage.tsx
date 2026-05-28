@@ -11,7 +11,6 @@ const LandingPage = ({ location, logout, openModal, user }) => {
     location?.lat,
     location?.lng,
   );
-  console.log("LandingPage weatherData:", weatherData);
 
   return (
     <>
@@ -29,11 +28,7 @@ const LandingPage = ({ location, logout, openModal, user }) => {
                 Your weather, <span className="text-[#09b8d4]">right now.</span>
               </h1>
               <WeatherCard weatherData={weatherData} isLoading={isLoading} />
-              <HourlyForecast
-                weatherData={weatherData}
-                isLoading={isLoading}
-                openModal={openModal}
-              />
+              <HourlyForecast weatherData={weatherData} isLoading={isLoading} openModal={openModal} variant={'light'}/>
               {!user ? (
                 <CTACard openModal={openModal} />
               ) : (
