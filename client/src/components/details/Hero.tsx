@@ -3,7 +3,7 @@ const Hero = ({ weatherData, isLoading }) => {
     <>
       <div className='w-full text-center text-white pt-12'>
         {isLoading || !weatherData ? 
-          <div>
+          <div className='flex items-center justify-center h-32'>
             <div className="animate-spin rounded-full h-8 w-8 border-4 border-gray-200 border-t-[#09b8d4]"></div>
           </div>
         :
