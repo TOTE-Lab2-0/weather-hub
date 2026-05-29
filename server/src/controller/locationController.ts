@@ -33,7 +33,7 @@ export const addLocation = async (
   try {
     const existing = await SavedLocation.findOne({ userId: req.session.userId, locationName })
     if (existing) return res.status(409).json({ error: 'Location already saved' })
-      
+
     const savedLocation = await SavedLocation.create({
       userId: req.session.userId,
       locationName,
@@ -72,7 +72,7 @@ export const deleteLocation = async (
       });
     }
 
-    return res.status(201).json({
+    return res.status(200).json({
       message: "Location deleted",
     });
   } catch (err) {
