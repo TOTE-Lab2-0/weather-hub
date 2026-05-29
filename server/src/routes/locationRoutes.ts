@@ -4,6 +4,7 @@ import {
   addLocation,
   deleteLocation,
 } from "../controller/locationController";
+import { isAuthenticated } from "../controller/authController";
 
 /* - [ ] Create location routes under `/api/locations`
 - [ ] Protect all location routes with session auth
@@ -16,8 +17,8 @@ import {
 
 const router = express.Router();
 
-router.get("/", getAllLocations);
-router.post("/", addLocation);
-router.delete("/:id", deleteLocation);
+router.get("/", isAuthenticated, getAllLocations);
+router.post("/", isAuthenticated, addLocation);
+router.delete("/:id", isAuthenticated, deleteLocation);
 
 export default router;
