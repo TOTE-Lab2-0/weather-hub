@@ -18,7 +18,7 @@ const useAuth = () => {
 
         if (res.ok) {
           const data = await res.json()
-          setUser(data)
+          setUser(data.user)
           setIsLoggedIn(true)
         }
       } catch(err) {

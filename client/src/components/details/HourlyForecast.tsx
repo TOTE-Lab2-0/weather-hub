@@ -14,13 +14,15 @@ type HourlyForecastProps = {
   isLoading: boolean;
   openModal?: (mode: "signup" | "login") => void;
   variant: 'light' | 'dark';
+  isLoggedIn: boolean;
 };
 
 const HourlyForecast = ({
   weatherData,
   isLoading,
   openModal,
-  variant
+  variant,
+  isLoggedIn
 }: HourlyForecastProps) => {
   const styles = variant === 'dark' ? {
     card: 'mt-6 mb-6 bg-white/10 backdrop-blur-sm p-6 rounded-xl',
@@ -120,7 +122,7 @@ const HourlyForecast = ({
                 )}
             </div>
 
-            {openModal &&
+            {openModal && !isLoggedIn &&
               <div className="mt-5 flex flex-col items-center gap-3 text-center">
                 <p className={styles.cta}>
                   Want more? Create an account for the 7-day forecast.

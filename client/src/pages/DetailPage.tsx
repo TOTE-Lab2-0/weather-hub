@@ -55,7 +55,7 @@ const DetailPage = ({ location }) => {
             <Hero weatherData={weatherData} isLoading={isLoading} />
             <SaveButton weatherData={weatherData} location={coords}/>
             <WeatherDetails weatherData={weatherData} isLoading={isLoading} />
-            <HourlyForecast weatherData={weatherData} isLoading={isLoading} variant={'dark'}/>
+            <HourlyForecast weatherData={weatherData} isLoading={isLoading} variant={'dark'} isLoggedIn={true}/>
             <SevenDayForecast weatherData={weatherData} isLoading={isLoading} />
           </div>
         </div>

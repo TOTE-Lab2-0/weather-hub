@@ -28,7 +28,7 @@ const LandingPage = ({ location, logout, openModal, user }) => {
                 Your weather, <span className="text-[#09b8d4]">right now.</span>
               </h1>
               <WeatherCard weatherData={weatherData} isLoading={isLoading} />
-              <HourlyForecast weatherData={weatherData} isLoading={isLoading} openModal={openModal} variant={'light'}/>
+              <HourlyForecast weatherData={weatherData} isLoading={isLoading} openModal={openModal} variant={'light'} isLoggedIn={!!user}/>
               {!user ? (
                 <CTACard openModal={openModal} />
               ) : (
