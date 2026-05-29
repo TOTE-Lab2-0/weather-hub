@@ -79,7 +79,9 @@ export const logIn = async (
 
     req.session.userId = user._id.toString();
 
-    return res.status(200).json({ message: "Logged in successfully" });
+    return res
+      .status(200)
+      .json({ id: user._id, name: user.name, email: user.email });
   } catch (err) {
     return next(err);
   }
@@ -102,10 +104,44 @@ export const logOut = (req: Request, res: Response, next: NextFunction) => {
   });
 };
 
-export const verifyAuth = (req: Request, res: Response, next: NextFunction) => {
+// isAuthenticated is a middleware
+export const isAuthenticated = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   // Check if session exists and contains a userId
   if (!req.session || !req.session.userId) {
     return res.status(401).json({ message: " Unauthorized" });
   }
   return next();
+};
+
+// verifyAuth function
+export const verifyAuth = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const userId = req.session.userId;
+
+    const user = await User.findById(userId).select("id email name");
+
+    if (!user) {
+      return res.status(401).json({
+        error: "Not authenticated",
+      });
+    }
+
+    return res.status(200).json({
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+      },
+    });
+  } catch (err) {
+    return next(err);
+  }
 };
