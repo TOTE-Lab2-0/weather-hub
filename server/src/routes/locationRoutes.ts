@@ -19,3 +19,5 @@ const router = express.Router();
 router.get("/", getAllLocations);
 router.post("/", addLocation);
 router.delete("/", deleteLocation);
+
+export default router;
