@@ -42,8 +42,7 @@ function App() {
     null,
   );
 
-  const { user, verifying, isLoggedIn, handleLogOut, onAuthSuccess } =
-    useAuth();
+  const { user, verifying, isLoggedIn, handleLogOut, onAuthSuccess } = useAuth();
 
   useEffect(() => {
     //navigator.geolocation is a built in web browser API

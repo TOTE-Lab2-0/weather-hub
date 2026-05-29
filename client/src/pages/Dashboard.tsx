@@ -25,11 +25,10 @@ type SavedLocation = {
 const Dashboard = ({ logout, openModal, user }: DashboardProps) => {
   const [savedLocations, setSavedLocations] = useState<SavedLocation[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
 
   useEffect(() => {
     const fetchSavedLocations = async () => {
-      setError("");
+ 
       setIsLoading(true);
       try {
         const response = await fetch("/api/locations", {
@@ -40,20 +39,36 @@ const Dashboard = ({ logout, openModal, user }: DashboardProps) => {
         const data = await response.json();
 
         if (!response.ok) {
-          setError(data.error || "Something went wrong. Please try again");
-          return;
+          throw new Error("Something went wrong. Please try again");
         }
 
         setSavedLocations(data.saved_locations);
-      } catch (error) {
-        console.error("Saved locations fetch failed", error);
-        setError("Unable to connect. Please try again");
+      } catch (err) {
+        console.error("Saved locations fetch failed", err);
       } finally {
         setIsLoading(false);
       }
     };
     fetchSavedLocations();
   }, []);
+
+  const handleDelete = async (id) => {
+    try {
+      const res = await fetch(`/api/locations/${id}`, {
+        method: 'DELETE',
+        credentials: 'include'
+      })
+
+      if (!res.ok) {
+        throw new Error('Card delete failed')
+      }
+
+      setSavedLocations(prev => prev.filter(loc => loc._id !== id))
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
   return (
     <>
       <NavBar logout={logout} openModal={openModal} user={user} />
@@ -72,13 +87,11 @@ const Dashboard = ({ logout, openModal, user }: DashboardProps) => {
 
           {isLoading && <p>Loading saved locations...</p>}
 
-          {error && <p className="text-red-500">{error}</p>}
-
-          {!isLoading && !error && savedLocations.length === 0 && (
-            <div className="bg-white border-t-4 border-t-[#09b8d4] rounded-lg shadow-md px-8 py-10 text-center max-w-3xl">
-              <p className="text-slate-500 font-normal">
-                No saved locations yet. Search for a city above to get started.
-              </p>
+          {!isLoading && savedLocations.length === 0 && (
+            <div className="bg-white border-t-4 border-t-[#09b8d4] rounded-lg shadow-md px-8 py-12 text-center max-w-3xl">
+              <p className="text-3xl mb-4">📍</p>
+              <p className="text-slate-700 font-semibold mb-2">No saved locations yet</p>
+              <p className="text-slate-400 text-sm">Search for a city above to get started.</p>
             </div>
           )}
 
@@ -89,6 +102,7 @@ const Dashboard = ({ logout, openModal, user }: DashboardProps) => {
               locationName={location.locationName}
               lat={location.lat}
               lng={location.lng}
+              onDelete={handleDelete}
             />
           ))}
         </div>
