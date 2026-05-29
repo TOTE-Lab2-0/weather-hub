@@ -97,7 +97,9 @@ function App() {
               }
             />
 
+            {/* Need to uncomment line 101 and delete 102 after tests are done */}
             <Route element={<ProtectedRoute isAuthenticated={isLoggedIn} />}>
+              {/*<Route element={<ProtectedRoute isAuthenticated={true} />}>*/}
               <Route
                 path="/dashboard"
                 element={
@@ -112,9 +114,9 @@ function App() {
                 path="/locations/current"
                 element={<DetailPage location={location} />}
               />
-              <Route 
-                path='/locations/:id'
-                element={<DetailPage location={location}/>}
+              <Route
+                path="/locations/:id"
+                element={<DetailPage location={location} />}
               />
             </Route>
           </Routes>

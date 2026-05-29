@@ -1,5 +1,6 @@
 import NavBar from "../components/shared/NavBar";
 import SearchBar from "../components/dashboard/SearchBar";
+import SavedLocationCard from "../components/dashboard/SavedLocationCard";
 
 type User = {
   id: string;
@@ -29,6 +30,7 @@ const Dashboard = ({ logout, openModal, user }: DashboardProps) => {
           </h1>
 
           <SearchBar />
+          <SavedLocationCard />
         </div>
       </main>
     </>

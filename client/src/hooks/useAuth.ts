@@ -52,7 +52,7 @@ const useAuth = () => {
   const onAuthSuccess = (user) => {
     setUser(user)
     setIsLoggedIn(true)
-    navigate("/location/current")
+    navigate("/locations/current")
   }
 
   return { user, verifying, isLoggedIn, handleLogOut, onAuthSuccess }
