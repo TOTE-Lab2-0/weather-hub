@@ -1,4 +1,4 @@
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams, useLocation } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import Hero from '../components/details/Hero.tsx'
 import SaveButton from '../components/details/SaveButton.tsx'
@@ -9,9 +9,8 @@ import useWeather from '../hooks/useWeather.ts'
 
 const DetailPage = ({ location }) => {
   const { id } = useParams() 
+  const { state } = useLocation()
   const [ coords, setCoords ] = useState<{ lat: number; lng: number } | null>(null)
-  
-  
   
     useEffect(() => {
       if (id) {
@@ -33,7 +32,9 @@ const DetailPage = ({ location }) => {
         }
         locationFetch()
       } else {
-        if (location) {
+        if (state?.lat && state?.lng) {
+          setCoords({ lat: state.lat, lng: state.lng })
+        } else if (location) {
           setCoords({lat: location.lat, lng: location.lng})
         }
       }
@@ -52,9 +53,9 @@ const DetailPage = ({ location }) => {
               <Link className='text-white/80 text-sm flex items-center hover:text-white' to='/dashboard'>Dashboard ›</Link>
             </div>
             <Hero weatherData={weatherData} isLoading={isLoading} />
-            <SaveButton weatherData={weatherData} location={location}/>
+            <SaveButton weatherData={weatherData} location={coords}/>
             <WeatherDetails weatherData={weatherData} isLoading={isLoading} />
-            <HourlyForecast weatherData={weatherData} isLoading={isLoading} variant={'dark'}/>
+            <HourlyForecast weatherData={weatherData} isLoading={isLoading} variant={'dark'} isLoggedIn={true}/>
             <SevenDayForecast weatherData={weatherData} isLoading={isLoading} />
           </div>
         </div>
