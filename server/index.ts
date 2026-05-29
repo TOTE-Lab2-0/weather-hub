@@ -8,6 +8,7 @@ import session from "express-session";
 import MongoStore from "connect-mongo";
 import { connectDB } from "./src/db/connection";
 import locationRoutes from "./src/routes/locationRoutes";
+import searchRoutes from './src/routes/searchRoutes'
 
 //activates dotenv -> reads your .env file and loads values into process.env so code can access them
 dotenv.config();
@@ -51,6 +52,8 @@ app.use("/api/weather", weatherRoutes);
 app.use("/api/auth", authRoutes);
 
 app.use("/api/locations", locationRoutes);
+
+app.use("/api/search", searchRoutes)
 
 // TDOD: Add global error handler middleware (must be after all routes)
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
