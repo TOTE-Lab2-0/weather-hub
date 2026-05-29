@@ -25,13 +25,14 @@ const SearchBar = () => {
       navigate('/locations/current', { state: { lat, lng } })
     }catch(err) {
       setError('City not found. Please try again')
+      setInput('')
       console.error(err)
     }
   }
 
   return (
     <>
-      <form onSubmit={handleSubmit} className="flex w-full max-w-3xl mb-10">
+      <form onSubmit={handleSubmit} className="flex w-full max-w-3xl mb-2">
         <div className="relative flex-1">
           <span className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400">
             🔍
@@ -39,10 +40,13 @@ const SearchBar = () => {
 
           <input
             value={input}
-            onChange={(e) => setInput(e.target.value)}
+            onChange={(e) => {
+              setInput(e.target.value)
+              setError('')
+            }}
             type="text"
             placeholder="Search for a city..."
-            className="w-full px-5 py-3 pl-14 rounded-l-lg border border-slate-300 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[#09b8d4]"
+            className={`w-full px-5 py-3 pl-14 rounded-l-lg border bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[#09b8d4] ${error ? 'border-red-400' : 'border-slate-300'}`}
           />
         </div>
 
@@ -53,7 +57,7 @@ const SearchBar = () => {
           Search
         </button>
       </form>
-      {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+      {error && <p className="text-red-400 text-xs mt-1 pl-1 mb-8">{error}</p>}
     </>
   );
 };
