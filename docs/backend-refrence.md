@@ -3,6 +3,7 @@
 This document is the backend reference for WeatherHub. It defines the backend responsibilities, API contracts, data shapes, and implementation conventions that keep frontend and backend work aligned.
 
 Use this alongside:
+
 - `docs/api-contract.md` for the compact route contract
 - `docs/frontend-reference.md` for frontend flow and component expectations
 - `server/.env.example` for local environment setup
@@ -12,6 +13,7 @@ Use this alongside:
 ## Backend Responsibilities
 
 The backend owns:
+
 - Weather data proxying through Open-Meteo
 - Reverse geocoding through BigDataCloud
 - User signup, login, logout, and session verification
@@ -33,6 +35,7 @@ server/index.ts
 ```
 
 The Express app should:
+
 - Load environment variables with `dotenv.config()`
 - Connect to MongoDB before serving protected data
 - Enable CORS for the Vite frontend
@@ -68,12 +71,12 @@ server/.env.example
 
 Required values:
 
-| Variable | Purpose |
-| --- | --- |
-| `PORT` | Backend port, usually `3001` |
-| `MONGODB_URI` | MongoDB Atlas connection string |
-| `SESSION_SECRET` | Secret used to sign session cookies |
-| `BIGDATACLOUD_API_KEY` | API key for reverse geocoding |
+| Variable               | Purpose                             |
+| ---------------------- | ----------------------------------- |
+| `PORT`                 | Backend port, usually `3001`        |
+| `MONGODB_URI`          | MongoDB Atlas connection string     |
+| `SESSION_SECRET`       | Secret used to sign session cookies |
+| `BIGDATACLOUD_API_KEY` | API key for reverse geocoding       |
 
 Do not commit real `.env` values.
 
@@ -114,10 +117,10 @@ Fetches forecast data and city metadata for a coordinate pair.
 
 Query parameters:
 
-| Name | Type | Required | Notes |
-| --- | --- | --- | --- |
-| `lat` | number | Yes | Latitude |
-| `lng` | number | Yes | Longitude |
+| Name  | Type   | Required | Notes     |
+| ----- | ------ | -------- | --------- |
+| `lat` | number | Yes      | Latitude  |
+| `lng` | number | Yes      | Longitude |
 
 Expected response:
 
@@ -158,6 +161,7 @@ Expected response:
 ```
 
 Backend responsibilities:
+
 - Validate `lat` and `lng`
 - Request weather data from Open-Meteo
 - Request city metadata from BigDataCloud
@@ -193,7 +197,7 @@ daily:
 Frontend usage:
 
 ```ts
-fetch(`/api/weather?lat=${lat}&lng=${lng}`)
+fetch(`/api/weather?lat=${lat}&lng=${lng}`);
 ```
 
 ---
@@ -231,6 +235,7 @@ Expected response:
 ```
 
 Backend responsibilities:
+
 - Validate `name`, `email`, and `password`
 - Normalize email to lowercase
 - Reject duplicate emails
@@ -261,6 +266,7 @@ Expected response:
 ```
 
 Backend responsibilities:
+
 - Normalize email to lowercase
 - Find user by email
 - Compare password with bcrypt
@@ -278,6 +284,7 @@ Expected response:
 ```
 
 Backend responsibilities:
+
 - Destroy the session
 - Clear the session cookie
 - Return a success message
@@ -305,6 +312,7 @@ Expected response when logged out:
 ```
 
 Backend responsibilities:
+
 - Check for an active session
 - Return `401` when no session exists
 - Return safe user data when a session exists
@@ -314,8 +322,8 @@ Frontend usage:
 ```ts
 fetch("/api/auth/verify", {
   method: "GET",
-  credentials: "include"
-})
+  credentials: "include",
+});
 ```
 
 ---
@@ -350,6 +358,7 @@ Expected response:
 ```
 
 Backend responsibilities:
+
 - Require login
 - Load saved locations where `userId` matches the logged-in user
 - Return only locations owned by that user
@@ -382,6 +391,7 @@ Expected response:
 ```
 
 Backend responsibilities:
+
 - Require login
 - Validate `locationName`, `lat`, and `lng`
 - Create a saved-location document with `userId` set to the logged-in user's id
@@ -400,6 +410,7 @@ Expected response:
 ```
 
 Backend responsibilities:
+
 - Require login
 - Delete only a location where `_id` matches `:id` and `userId` matches the logged-in user
 - Return `404` if the location does not exist for that user
@@ -423,6 +434,7 @@ Expected response:
 ```
 
 Backend responsibilities:
+
 - Validate the `city` query parameter
 - Call Open-Meteo Geocoding API
 - Choose the best matching result
@@ -439,6 +451,7 @@ SearchBar -> backend geocodes city -> frontend navigates with returned coords
 ## Data Model
 
 WeatherHub uses two MongoDB collections:
+
 - `users`
 - `saved_locations`
 
@@ -457,6 +470,7 @@ Recommended shape:
 ```
 
 Rules:
+
 - Never return `passwordHash` to the frontend
 - Store normalized emails in lowercase
 - Use the user `_id` as the session identity
@@ -476,6 +490,7 @@ Recommended shape:
 ```
 
 Rules:
+
 - `userId` references the owning user
 - Every saved-location query should filter by `userId`
 - Delete actions should filter by both `_id` and `userId`
@@ -497,9 +512,9 @@ app.use(
     cookie: {
       httpOnly: true,
       sameSite: "lax",
-      secure: false
-    }
-  })
+      secure: false,
+    },
+  }),
 );
 ```
 
@@ -509,15 +524,15 @@ For local frontend requests that include cookies, CORS must allow credentials:
 app.use(
   cors({
     origin: "http://localhost:5173",
-    credentials: true
-  })
+    credentials: true,
+  }),
 );
 ```
 
 Frontend requests that depend on login should include:
 
 ```ts
-credentials: "include"
+credentials: "include";
 ```
 
 ---
@@ -526,14 +541,14 @@ credentials: "include"
 
 Use consistent status codes and response shapes.
 
-| Status | Meaning |
-| --- | --- |
-| `400` | Missing or invalid request data |
-| `401` | Not logged in |
-| `403` | Logged in but not allowed |
-| `404` | Requested resource not found |
-| `409` | Duplicate account or duplicate saved location |
-| `500` | Server or external API error |
+| Status | Meaning                                       |
+| ------ | --------------------------------------------- |
+| `400`  | Missing or invalid request data               |
+| `401`  | Not logged in                                 |
+| `403`  | Logged in but not allowed                     |
+| `404`  | Requested resource not found                  |
+| `409`  | Duplicate account or duplicate saved location |
+| `500`  | Server or external API error                  |
 
 Recommended error response:
 
@@ -544,6 +559,7 @@ Recommended error response:
 ```
 
 Global error handler responsibilities:
+
 - Log useful server-side details
 - Avoid leaking secrets to the frontend
 - Return a predictable `{ error }` response
@@ -582,6 +598,7 @@ server/
 ```
 
 Conventions:
+
 - Routes define URL paths and middleware order
 - Controllers handle request logic and responses
 - Models define MongoDB shape and validation
@@ -599,6 +616,7 @@ curl "http://localhost:3001/api/weather?lat=45.5152&lng=-122.6784"
 ```
 
 Expected:
+
 - Response has `weather.current`
 - Response has `weather.hourly`
 - Response has `weather.daily`
@@ -633,6 +651,7 @@ curl "http://localhost:3001/api/search?city=Portland"
 ```
 
 Expected:
+
 - Response has `locationName`
 - Response has `lat`
 - Response has `lng`
@@ -642,6 +661,7 @@ Expected:
 ## Backend Task List
 
 Project setup:
+
 - [x] Use `process.env.PORT || 3001` in `server/index.ts`
 - [x] Configure CORS with `credentials: true`
 - [x] Add `express-session` middleware
@@ -649,22 +669,25 @@ Project setup:
 - [x] Keep `.env.example` aligned with required backend variables
 
 Models:
-- [ ] Create `User` model
-- [ ] Create `SavedLocation` model
-- [ ] Add `userId` reference from `SavedLocation` to `User`
-- [ ] Normalize user emails before saving or querying
+
+- [x] Create `User` model
+- [x] Create `SavedLocation` model
+- [x] Add `userId` reference from `SavedLocation` to `User`
+- [x] Normalize user emails before saving or querying
 - [ ] Prevent password hashes from being returned in API responses
 
 Auth:
-- [ ] Create auth routes under `/api/auth`
-- [ ] Implement `POST /api/auth/signup`
-- [ ] Implement `POST /api/auth/login`
-- [ ] Implement `POST /api/auth/logout`
-- [ ] Implement `GET /api/auth/verify`
-- [ ] Store the logged-in user id in the session
-- [ ] Return `401` for missing or invalid sessions
+
+- [x] Create auth routes under `/api/auth`
+- [x] Implement `POST /api/auth/signup`
+- [x] Implement `POST /api/auth/login`
+- [x] Implement `POST /api/auth/logout`
+- [x] Implement `GET /api/auth/verify`
+- [x] Store the logged-in user id in the session
+- [x] Return `401` for missing or invalid sessions
 
 Locations:
+
 - [ ] Create location routes under `/api/locations`
 - [ ] Protect all location routes with session auth
 - [ ] Implement `GET /api/locations`
@@ -674,6 +697,7 @@ Locations:
 - [ ] Exclude `userId` from frontend responses unless the team explicitly needs it
 
 Weather and search:
+
 - [ ] Validate `lat` and `lng` in `/api/weather`
 - [ ] Keep weather response shape as `{ weather, city }`
 - [ ] Create search route under `/api/search`
@@ -681,6 +705,7 @@ Weather and search:
 - [ ] Return normalized `{ locationName, lat, lng }` search results
 
 Errors and verification:
+
 - [ ] Add global error handler middleware after all routes
 - [ ] Normalize error responses as `{ error: "message" }`
 - [ ] Preserve useful HTTP status codes
@@ -688,10 +713,4 @@ Errors and verification:
 - [ ] Manually verify each route with curl or the frontend
 - [ ] Update this task list as backend work is completed
 
-
-
-
-
 ## technical challenges/notes
-
-
