@@ -112,9 +112,9 @@ function App() {
                 path="/locations/current"
                 element={<DetailPage location={location} />}
               />
-              <Route 
-                path='/locations/:id'
-                element={<DetailPage location={location}/>}
+              <Route
+                path="/locations/:id"
+                element={<DetailPage location={location} />}
               />
             </Route>
           </Routes>
