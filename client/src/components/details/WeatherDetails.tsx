@@ -1,6 +1,5 @@
 
 const WeatherDetails = ({ weatherData, isLoading }) => {
-  
   return (
     <>
       <div className='w-full text-white pt-10'>
