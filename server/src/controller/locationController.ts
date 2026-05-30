@@ -9,7 +9,7 @@ export const getAllLocations = async (
   try {
     const savedLocations = await SavedLocation.find({
       userId: req.session.userId,
-    }).select("_id locationName lat lng saved_at");
+    }).select("_id locationName lat lng savedAt");
 
     return res.status(200).json({ saved_locations: savedLocations });
   } catch (err) {

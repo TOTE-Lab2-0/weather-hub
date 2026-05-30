@@ -20,7 +20,10 @@ export const getWeather = async (
     res.locals.weather = weatherData;
     return next()
   } catch (error) {
-    res.status(500).json({ error: "Failed to fetch weather from Open-Meteo" });
-    return next(error);
+    return next({
+      log: "Failed to fetch weather from Open-Meteo", 
+      status: 500, 
+      message: { error: "Failed to fetch weather from Open-Meteo"},
+    });
   }
 };

@@ -6,6 +6,11 @@ export const citySearch = async (
   next: NextFunction,
 ): Promise<void> => {
     const city = (req.query.city as string);
+    
+    if (!city) {
+        res.status(400).json({ error: "City is required" });
+        return;
+    }
 
     try{
         const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1&language=en&format=json`
@@ -26,9 +31,10 @@ export const citySearch = async (
             lng: results[0].longitude
         })
     } catch (error) {
-        res.status(500).json({ error: "Error in citySearch" });
-        return next(error)
+        return next({
+            log: "citySearch controller error", 
+            status: 500, 
+            message: { error: "Error in citySearch"},
+        });
     }
 }
-
-
