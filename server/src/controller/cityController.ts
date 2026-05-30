@@ -28,8 +28,11 @@ export const getCity = async (
         
         
     } catch (error) {
-        res.status(500).json({ error: "Error in getCity" });
-        return next(error)
+        return next({
+            log: "getCity controller error", 
+            status: 500, 
+            message: { error: "Error in getCity"},
+        });
     }
 }
 

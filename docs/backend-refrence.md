@@ -713,4 +713,178 @@ Errors and verification:
 - [ ] Manually verify each route with curl or the frontend
 - [ ] Update this task list as backend work is completed
 
-## technical challenges/notes
+
+
+
+# Backend Testing Todo List
+
+## Goal
+
+Add backend tests for the Express API so we can verify auth, protected routes, search, saved locations, and weather responses.
+
+# Immediate Backend Testing Prep
+
+- [ ] Update `server/package.json` so `npm test` runs Vitest instead of the placeholder error
+- [x] Split Express setup into `server/src/app.ts`
+- [x] Keep `connectDB()` and `app.listen(...)` in `server/index.ts`
+- [x] Export `app` from `server/src/app.ts` so Supertest can import it
+- [ ] Add missing `/api/search` validation for no `city`
+- [ ] Decide whether saved locations return `savedAt`, `saved_at`, or neither
+- [ ] Make location GET and POST responses use the same shape
+- [ ] Add `response.ok` checks in weather/search/city external API calls before trusting returned JSON
+
+
+## Phase 1: Testing Setup
+
+- [x] Go into the server folder: `cd server`
+- [x] Install backend testing tools: `npm install -D vitest supertest @types/supertest mongodb-memory-server`
+- [x] Update `server/package.json` scripts:
+  - [x] Add `"test": "vitest --run"`
+  - [x] Add `"test:watch": "vitest"`
+- [x] Run `npm test` to confirm Vitest starts
+
+## Phase 2: Make The Server Testable
+
+- [x] Create `server/src/app.ts`
+- [x] Move Express app setup into `app.ts`
+- [x] Keep `app.listen(...)` inside `server/index.ts`
+- [x] Export `app` from `app.ts`
+- [x] Import `app` into `index.ts`
+- [ ] Make sure `app.ts` includes:
+  - [ ] `express()`
+  - [ ] `cors`
+  - [ ] `express.json()`
+  - [ ] `session`
+  - [ ] route mounts
+  - [ ] global error handler
+- [ ] Make sure `index.ts` includes:
+  - [ ] `dotenv.config()`
+  - [ ] `connectDB()`
+  - [ ] `app.listen(...)`
+
+## Phase 3: Create Test Files
+
+- [x] Create `server/src/test`
+- [x] Create `server/src/test/search.test.ts`
+- [x] Create `server/src/test/auth.test.ts`
+- [x] Create `server/src/test/locations.test.ts`
+- [x] Create `server/src/test/weather.test.ts`
+
+## Phase 4: Search Route Tests
+
+- [x] Test `GET /api/search` with no city
+- [x] Expected result: status `400`
+- [x] Expected response: `{ "error": "City is required" }`
+- [ ] Test `GET /api/search?city=notarealcity`
+- [ ] Expected result: status `404`
+- [ ] Expected response: `{ "error": "City not found" }`
+- [ ] Test `GET /api/search?city=Portland`
+- [ ] Expected result: status `200`
+- [ ] Expected response includes:
+  - [ ] `locationName`
+  - [ ] `lat`
+  - [ ] `lng`
+- [ ] Mock `fetch` so tests do not call the real Open-Meteo API
+
+## Phase 5: Logged-Out Location Route Tests
+
+- [ ] Test `GET /api/locations` while logged out
+- [ ] Expected result: status `401`
+- [ ] Test `POST /api/locations` while logged out
+- [ ] Expected result: status `401`
+- [ ] Test `DELETE /api/locations/:id` while logged out
+- [ ] Expected result: status `401`
+- [ ] Expected response: `{ "error": "Not authenticated" }`
+
+## Phase 6: Auth Route Tests
+
+- [ ] Test signup with missing fields
+- [ ] Expected result: status `400`
+- [ ] Test valid signup
+- [ ] Expected result: status `201`
+- [ ] Expected response includes:
+  - [ ] `id`
+  - [ ] `name`
+  - [ ] `email`
+- [ ] Confirm signup response does not include `passwordHash`
+- [ ] Test duplicate signup
+- [ ] Expected result: status `409`
+- [ ] Test login with missing fields
+- [ ] Expected result: status `400`
+- [ ] Test login with wrong email or password
+- [ ] Expected result: status `401`
+- [ ] Test valid login
+- [ ] Expected result: status `200`
+- [ ] Expected response includes:
+  - [ ] `id`
+  - [ ] `name`
+  - [ ] `email`
+- [ ] Test `GET /api/auth/verify` while logged out
+- [ ] Expected result: status `401`
+- [ ] Test `GET /api/auth/verify` after login
+- [ ] Expected response: `{ "user": { "id": "...", "name": "...", "email": "..." } }`
+- [ ] Test logout
+- [ ] Expected response: `{ "message": "Logged out" }`
+
+## Phase 7: Logged-In Location Route Tests
+
+- [ ] Create a test user
+- [ ] Log in using `supertest.agent(app)` so the session cookie is saved
+- [ ] Test `POST /api/locations`
+- [ ] Expected result: status `201`
+- [ ] Expected response includes:
+  - [ ] `_id`
+  - [ ] `locationName`
+  - [ ] `lat`
+  - [ ] `lng`
+- [ ] Confirm response does not include `userId`
+- [ ] Test `GET /api/locations`
+- [ ] Expected response: `{ "saved_locations": [...] }`
+- [ ] Confirm `GET /api/locations` only returns locations for the logged-in user
+- [ ] Test `DELETE /api/locations/:id`
+- [ ] Expected response: `{ "message": "Location deleted" }`
+- [ ] Test deleting a missing location
+- [ ] Expected result: status `404`
+- [ ] Test that one user cannot delete another user's location
+
+## Phase 8: Weather Route Tests
+
+- [ ] Test `GET /api/weather?lat=45.5&lng=-122.6`
+- [ ] Expected result: status `200`
+- [ ] Expected response includes:
+  - [ ] `weather`
+  - [ ] `city`
+  - [ ] `weather.current`
+  - [ ] `weather.hourly`
+  - [ ] `weather.daily`
+- [ ] Mock Open-Meteo weather API response
+- [ ] Mock BigDataCloud reverse geocoding API response
+- [ ] Test weather API failure
+- [ ] Expected result: status `500`
+
+## Phase 9: Cleanup Before Final Testing
+
+- [ ] Make sure logout response is exactly `{ "message": "Logged out" }`
+- [ ] Make sure error responses usually use `{ "error": "..." }`
+- [ ] Make sure `/api/search` validates missing city
+- [ ] Make sure protected routes return `401` when logged out
+- [ ] Make sure saved location responses use consistent field names
+- [ ] Decide whether saved locations should use `savedAt` or `saved_at`
+- [ ] Update frontend/backend contract if field names change
+
+## Phase 10: Final Check
+
+- [ ] Run backend tests: `npm test`
+- [ ] Make sure tests do not require the frontend to run
+- [ ] Make sure tests do not use the shared team MongoDB database
+- [ ] Make sure all tests pass
+- [ ] Commit the backend testing setup
+- [ ] Open a PR for backend tests
+
+
+
+
+
+
+
+

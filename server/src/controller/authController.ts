@@ -99,7 +99,7 @@ export const logOut = (req: Request, res: Response, next: NextFunction) => {
     res.clearCookie("connect.sid");
 
     return res.status(200).json({
-      message: "Logged out successfully",
+      message: "Logged out",
     });
   });
 };
@@ -112,7 +112,7 @@ export const isAuthenticated = (
 ) => {
   // Check if session exists and contains a userId
   if (!req.session || !req.session.userId) {
-    return res.status(401).json({ message: " Unauthorized" });
+    return res.status(401).json({ error: "Not authenticated" });
   }
   return next();
 };
